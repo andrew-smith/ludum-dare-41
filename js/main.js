@@ -300,7 +300,7 @@ const renderPlayer = (delta) => {
 
     g.translate(PLAYER_POSITION.x,PLAYER_POSITION.y);
 
-
+    g.imageSmoothingEnabled = false;
     g.fillRect(-PLAYER_WIDTH / 2,
         -PLAYER_HEIGHT / 2,
         PLAYER_WIDTH,
