@@ -160,7 +160,7 @@ const render = (delta) => {
     renderTimeline(delta);
 };
 
-const PLAYER_WIDTH = 32;
+const PLAYER_WIDTH = 40;
 const PLAYER_HEIGHT = 32;
 
 const PLAYER_POSITION = {
@@ -300,19 +300,19 @@ const renderPlayer = (delta) => {
 
     g.translate(PLAYER_POSITION.x,PLAYER_POSITION.y);
 
-    g.imageSmoothingEnabled = false;
-    g.fillRect(-PLAYER_WIDTH / 2,
-        -PLAYER_HEIGHT / 2,
-        PLAYER_WIDTH,
-        PLAYER_HEIGHT);
+    // g.fillRect(-PLAYER_WIDTH / 2,
+    //     -PLAYER_HEIGHT / 2,
+    //     PLAYER_WIDTH,
+    //     PLAYER_HEIGHT);
 
+    g.imageSmoothingEnabled = false;
     g.drawImage(imgPlayerShip,
         0,
         0,
         PLAYER_WIDTH,
         PLAYER_HEIGHT,
-        -PLAYER_WIDTH / 2,
-        -PLAYER_HEIGHT / 2,
+        -(PLAYER_WIDTH / 2),
+        -(PLAYER_HEIGHT / 2),
         PLAYER_WIDTH,
         PLAYER_HEIGHT);
 
