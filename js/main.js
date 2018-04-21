@@ -347,7 +347,7 @@ const renderPlayer = (delta) => {
 
 
     g.drawImage(imgPlayerShip,
-        0,
+        0 + 40 * 5,
         0,
         PLAYER_WIDTH,
         PLAYER_HEIGHT,
