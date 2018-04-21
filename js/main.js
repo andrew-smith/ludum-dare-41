@@ -13,6 +13,10 @@ const KEY_A = 65;
 const KEY_S = 83;
 const KEY_D = 68;
 const KEY_SPACE = 32;
+const KEY_UP = 38;
+const KEY_DOWN = 40;
+const KEY_LEFT = 37;
+const KEY_RIGHT = 39;
 
 $(() => {
     console.log("Game loading");
@@ -36,6 +40,7 @@ function preload() {
 let analyzer = null;
 let PEAKS = [];
 
+// p5 function
 function setup() {
     console.log("ready to start");
 
@@ -48,7 +53,7 @@ function setup() {
         console.log("starting");
         backgroundMusic.play();
 
-    }, 0.9, 0.22, 200);
+    }, 0.5, 0.1, 300);
 };
 // p5 function
 function draw() {
@@ -137,16 +142,16 @@ const playerActions = (delta) => {
 
     let movement = 0.15 * delta;
 
-    if(keys[KEY_W]) {
+    if(keys[KEY_W] || keys[KEY_UP]) {
         PLAYER_POSITION.y -= movement;
     }
-    if(keys[KEY_S]) {
+    if(keys[KEY_S] || keys[KEY_DOWN]) {
         PLAYER_POSITION.y += movement;
     }
-    if(keys[KEY_A]) {
+    if(keys[KEY_A] || keys[KEY_LEFT]) {
         PLAYER_POSITION.x -= movement;
     }
-    if(keys[KEY_D]) {
+    if(keys[KEY_D] || keys[KEY_RIGHT]) {
         PLAYER_POSITION.x += movement;
     }
 
