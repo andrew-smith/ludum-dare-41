@@ -125,8 +125,6 @@ let peaksFired = {};
 const pressShoot = (keyCode) => {
     if(keyCode === KEY_SPACE && !needsReload) {
         // then player can fire
-        console.log("fire!");
-        PLAYER_SHOTS.push({x: PLAYER_POSITION.x, y: PLAYER_POSITION.y});
 
         // work out how many points
         let now = backgroundMusic.currentTime();
@@ -174,6 +172,9 @@ const pressShoot = (keyCode) => {
         // this means we fired
         if(peaksFired[closestPeak] && closestDiff < 0.3) {
             flashIndex = 0;
+
+            console.log("fire!");
+            PLAYER_SHOTS.push({x: PLAYER_POSITION.x, y: PLAYER_POSITION.y});
         }
 
         console.log(peaksFired[closestPeak]);
