@@ -120,12 +120,65 @@ const PLAYER_POSITION = {
 let PLAYER_SHOTS = [];
 
 let needsReload = false;
+let peaksFired = {};
 
 const pressShoot = (keyCode) => {
     if(keyCode === KEY_SPACE && !needsReload) {
         // then player can fire
         console.log("fire!");
         PLAYER_SHOTS.push({x: PLAYER_POSITION.x, y: PLAYER_POSITION.y});
+
+        // work out how many points
+        let now = backgroundMusic.currentTime();
+
+        // find the closest peak
+        let closestPeak = 99999999;
+        let closestDiff = 99999999;
+        peaksFired[closestPeak] = 'bad';
+
+        PEAKS.forEach((peak) => {
+            let diff = now - peak;
+
+            if(diff < 0) {
+                diff = diff * -1;
+            }
+
+            if(!peaksFired[peak] && diff < closestDiff) {
+                closestDiff = diff;
+                closestPeak = peak;
+
+                //peaksFired[peak] = 'bad';
+            }
+
+
+        });
+
+        console.log("DIFF: " + closestDiff);
+
+        if(closestDiff < 0.3) {
+            peaksFired[closestPeak] = 'bad';
+        }
+        if(closestDiff < 0.2) {
+            peaksFired[closestPeak] = "ok";
+        }
+        if(closestDiff < 0.1) {
+            peaksFired[closestPeak] = "good";
+        }
+        if(closestDiff < 0.05) {
+            peaksFired[closestPeak] = "great";
+        }
+        if(closestDiff < 0.02) {
+            peaksFired[closestPeak] = "perfect";
+        }
+
+        // this means we fired
+        if(peaksFired[closestPeak] && closestDiff < 0.3) {
+            flashIndex = 0;
+        }
+
+        console.log(peaksFired[closestPeak]);
+
+
         needsReload = true;
     }
 };
@@ -240,13 +293,31 @@ const renderPlayerShots = (delta) => {
 const CANVAS_BEAT_WIDTH = 512;
 const CANVAS_BEAT_HEIGHT = 50;
 
+const flashArray = [
+    'e6e6ff',
+    'ccccff',
+    'b3b3ff',
+    '9999ff',
+    '8080ff',
+    '6666ff',
+    '4d4dff',
+    '3333ff',
+    '1a1aff'
+];
+let flashIndex = 999;
+
 const renderTimeline = (delta) => {
 
+    flashIndex++;
 
     tg.save();
 
 
+
     tg.fillStyle = 'blue';
+    if(flashIndex < flashArray.length) {
+        tg.fillStyle = '#' + flashArray[flashIndex];
+    }
     tg.fillRect(0,0,CANVAS_BEAT_WIDTH, CANVAS_BEAT_HEIGHT);
 
 
@@ -265,6 +336,9 @@ const renderTimeline = (delta) => {
 
             tg.fillStyle = 'black';
 
+            if(peaksFired[peak]) {
+                tg.fillStyle = 'grey';
+            }
             if(diff < 10 && diff > -10) {
                 tg.fillStyle = 'white';
             }
