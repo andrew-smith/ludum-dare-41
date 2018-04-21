@@ -84,11 +84,14 @@ function draw() {
 
 
 let imgPlayerShip = new Image();
-
+let imgLightning = new Image();
 const loadImages = () => {
 
     imgPlayerShip.load("res/Main-Ships.png");
     document.getElementById("imagestore").appendChild(imgPlayerShip);
+
+    imgLightning.load("res/lightning-1.png");
+    document.getElementById("imagestore").appendChild(imgLightning);
 };
 
 
@@ -98,6 +101,7 @@ const checkForEverythingLoaded = () => {
     let allLoaded = musicLoaded;
 
     allLoaded = allLoaded && imgPlayerShip.completedPercentage > 99;
+    allLoaded = allLoaded && imgLightning.completedPercentage > 99;
 
     if(!allLoaded) {
         console.log("still loading");
@@ -135,6 +139,7 @@ const gameloop = () => {
 
 
     g.save();
+    g.imageSmoothingEnabled = false;
     render(delta);
     g.restore();
 
@@ -152,8 +157,7 @@ const render = (delta) => {
     g.scale(CANVAS_SCALE, CANVAS_SCALE);
 
     // background picture
-    g.fillStyle = 'blue';
-    g.fillRect(0,0,CANVAS_WIDTH, CANVAS_HEIGHT);
+    renderBackground(delta);
 
     renderPlayer(delta);
 
@@ -225,7 +229,20 @@ const pressShoot = (keyCode) => {
             flashIndex = 0;
 
             console.log("fire!");
-            PLAYER_SHOTS.push({x: PLAYER_POSITION.x, y: PLAYER_POSITION.y});
+            let shot = {
+                x: PLAYER_POSITION.x,
+                y: PLAYER_POSITION.y,
+                type: 'bullet',
+                ttl: 3000,
+                maxttl: 3000
+            };
+
+            shot.type = 'light';
+            shot.ttl = 200;
+
+            shot.maxttl = shot.ttl;
+
+            PLAYER_SHOTS.push(shot);
         }
 
         console.log(peaksFired[closestPeak]);
@@ -264,8 +281,8 @@ const playerActions = (delta) => {
     if(PLAYER_POSITION.y > CANVAS_HEIGHT) {
         PLAYER_POSITION.y = CANVAS_HEIGHT;
     }
-    if(PLAYER_POSITION.y < 0) {
-        PLAYER_POSITION.y = 0;
+    if(PLAYER_POSITION.y < 0 + PLAYER_HEIGHT) {
+        PLAYER_POSITION.y = 0 + PLAYER_HEIGHT;
     }
     if(PLAYER_POSITION.x > CANVAS_WIDTH) {
         PLAYER_POSITION.x = CANVAS_WIDTH;
@@ -288,13 +305,36 @@ const calculatePlayerShots = (delta) => {
     }
 
     PLAYER_SHOTS.forEach((shot) => {
-        shot.y -= movement;
+
+        if(shot.type === 'bullet') {
+            shot.y -= movement;
+        }
+        if(shot.type === 'light') {
+            shot.x = PLAYER_POSITION.x;
+            shot.y = PLAYER_POSITION.y;
+        }
+
+        shot.ttl -= delta;
+
+        if(shot.ttl < 0) {
+            shot.expired = true;
+        }
     });
 };
 
+
+const renderBackground = (delta) => {
+
+    g.fillStyle = 'blue';
+    g.fillRect(0,0,CANVAS_WIDTH, CANVAS_HEIGHT);
+
+}
+
 const renderPlayer = (delta) => {
 
-    g.fillStyle = 'red';
+
+
+    renderPlayerShots(delta);
 
     g.save();
 
@@ -305,7 +345,7 @@ const renderPlayer = (delta) => {
     //     PLAYER_WIDTH,
     //     PLAYER_HEIGHT);
 
-    g.imageSmoothingEnabled = false;
+
     g.drawImage(imgPlayerShip,
         0,
         0,
@@ -324,22 +364,69 @@ const renderPlayer = (delta) => {
         2);
 
     g.restore();
-
-    renderPlayerShots(delta);
 };
 
 
+
+
 const renderPlayerShots = (delta) => {
-    g.fillStyle = 'black';
 
     PLAYER_SHOTS.forEach((shot) => {
-        g.fillRect(shot.x,
-            shot.y,
-            2,
-            2);
+        if(shot.type === 'bullet') {
+            renderBullet(shot);
+        }
+        else if(shot.type === 'light') {
+            renderLightning(shot);
+        }
     });
 
 
+};
+
+
+const renderBullet = (shot) => {
+    g.fillStyle = 'black';
+
+    g.fillRect(shot.x,
+        shot.y,
+        2,
+        2);
+};
+
+IMG_LIGHT_WIDTH = 48;
+IMG_LIGHT_HEIGHT = 320;
+
+const renderLightning = (shot) => {
+    g.fillStyle = 'white';
+
+    if(shot.ttl < 0) {
+        return;
+    }
+
+    g.save();
+
+    g.globalAlpha = (shot.ttl / shot.maxttl);
+
+    g.translate(shot.x, shot.y);
+
+    // make skinnier (not height)
+    g.scale(0.5, 1);
+
+    if(Math.random() > 0.5) {
+        g.scale(-1, 1);
+    }
+
+    g.drawImage(imgLightning,
+        0,
+        0,
+        IMG_LIGHT_WIDTH,
+        IMG_LIGHT_HEIGHT,
+        -(IMG_LIGHT_WIDTH / 2),
+        -IMG_LIGHT_HEIGHT,
+        IMG_LIGHT_WIDTH,
+        IMG_LIGHT_HEIGHT);
+
+    g.restore();
 };
 
 const CANVAS_BEAT_WIDTH = 512;
