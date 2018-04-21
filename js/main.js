@@ -18,6 +18,27 @@ const KEY_DOWN = 40;
 const KEY_LEFT = 37;
 const KEY_RIGHT = 39;
 
+// https://stackoverflow.com/a/22593907/462276
+Image.prototype.load = function(url){
+       var thisImg = this;
+       var xmlHTTP = new XMLHttpRequest();
+       xmlHTTP.open('GET', url,true);
+       xmlHTTP.responseType = 'arraybuffer';
+       xmlHTTP.onload = function(e) {
+           var blob = new Blob([this.response]);
+           thisImg.src = window.URL.createObjectURL(blob);
+       };
+       xmlHTTP.onprogress = function(e) {
+           thisImg.completedPercentage = parseInt((e.loaded / e.total) * 100);
+       };
+       xmlHTTP.onloadstart = function() {
+           thisImg.completedPercentage = 0;
+       };
+       xmlHTTP.send();
+   };
+
+Image.prototype.completedPercentage = 0;
+
 $(() => {
     console.log("Game loading");
 
@@ -27,7 +48,7 @@ $(() => {
     window.onkeyup = function(e) { keys[e.keyCode] = false; releaseShoot(e.keyCode); }
     window.onkeydown = function(e) { keys[e.keyCode] = true; pressShoot(e.keyCode); }
 
-    gameloop();
+    checkForEverythingLoaded();
 });
 
 let backgroundMusic = null;
@@ -35,14 +56,17 @@ let backgroundMusic = null;
 function preload() {
     console.log("preload");
     backgroundMusic = loadSound("res/bensound-moose.mp3");
+
+    loadImages();
 };
 
 let analyzer = null;
 let PEAKS = [];
 
+let musicLoaded = false;
+
 // p5 function
 function setup() {
-    console.log("ready to start");
 
     analyzer = new p5.Amplitude();
     analyzer.setInput(backgroundMusic);
@@ -50,9 +74,7 @@ function setup() {
     backgroundMusic.processPeaks((peaks) => {
         PEAKS = peaks;
 
-        console.log("starting");
-        backgroundMusic.play();
-
+        musicLoaded = true;
     }, 0.5, 0.1, 300);
 };
 // p5 function
@@ -60,6 +82,35 @@ function draw() {
     // LEAVE THIS BLANK
 };
 
+
+let imgPlayerShip = new Image();
+
+const loadImages = () => {
+
+    imgPlayerShip.load("res/Main-Ships.png");
+    document.getElementById("imagestore").appendChild(imgPlayerShip);
+};
+
+
+
+const checkForEverythingLoaded = () => {
+
+    let allLoaded = musicLoaded;
+
+    allLoaded = allLoaded && imgPlayerShip.completedPercentage > 99;
+
+    if(!allLoaded) {
+        console.log("still loading");
+        setTimeout(checkForEverythingLoaded, 100);
+    }
+    else {
+        console.log("READY TO START");
+
+
+        backgroundMusic.play();
+        gameloop();
+    }
+};
 
 // how long since last frame
 let LAST_UPDATE = 0;
@@ -247,24 +298,24 @@ const renderPlayer = (delta) => {
 
     g.save();
 
-    g.translate(PLAYER_POSITION.x - (PLAYER_WIDTH/2),
-        PLAYER_POSITION.y - (PLAYER_HEIGHT / 2))
+    g.translate(PLAYER_POSITION.x,PLAYER_POSITION.y);
 
-    if(analyzer) {
-        var rms = analyzer.getLevel();
 
-        // if(rms > 0.4) {
-        //     console.log("BEAT");
-        // }
-        // else {
-        //     console.log("-");
-        // }
-    }
-
-    g.fillRect(0,
-        0,
+    g.fillRect(-PLAYER_WIDTH / 2,
+        -PLAYER_HEIGHT / 2,
         PLAYER_WIDTH,
         PLAYER_HEIGHT);
+
+    g.drawImage(imgPlayerShip,
+        0,
+        0,
+        PLAYER_WIDTH,
+        PLAYER_HEIGHT,
+        -PLAYER_WIDTH / 2,
+        -PLAYER_HEIGHT / 2,
+        PLAYER_WIDTH,
+        PLAYER_HEIGHT);
+
 
     g.fillStyle = 'black';
     g.fillRect(0,
