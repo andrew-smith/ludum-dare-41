@@ -2,6 +2,9 @@
 // graphics context
 let g = null;
 
+// timeline graphics context
+let tg = null;
+
 // current key state
 const keys = {};
 
@@ -15,6 +18,7 @@ $(() => {
     console.log("Game loading");
 
     g = document.getElementById("maincanvas").getContext('2d');
+    tg = document.getElementById("beatcanvas").getContext('2d');
 
     window.onkeyup = function(e) { keys[e.keyCode] = false; releaseShoot(e.keyCode); }
     window.onkeydown = function(e) { keys[e.keyCode] = true; pressShoot(e.keyCode); }
@@ -22,7 +26,34 @@ $(() => {
     gameloop();
 });
 
+let backgroundMusic = null;
+// p5 function
+function preload() {
+    console.log("preload");
+    backgroundMusic = loadSound("res/bensound-moose.mp3");
+};
 
+let analyzer = null;
+let PEAKS = [];
+
+function setup() {
+    console.log("ready to start");
+
+    analyzer = new p5.Amplitude();
+    analyzer.setInput(backgroundMusic);
+
+    backgroundMusic.processPeaks((peaks) => {
+        PEAKS = peaks;
+
+        console.log("starting");
+        backgroundMusic.play();
+
+    }, 0.9, 0.22, 200);
+};
+// p5 function
+function draw() {
+    // LEAVE THIS BLANK
+};
 
 
 // how long since last frame
@@ -39,6 +70,13 @@ const gameloop = () => {
     let delta = now - LAST_UPDATE;
 
     playerActions(delta);
+
+    if(analyzer) {
+        var rms = analyzer.getLevel();
+
+
+    }
+
 
     g.save();
     render(delta);
@@ -63,7 +101,7 @@ const render = (delta) => {
 
     renderPlayer(delta);
 
-
+    renderTimeline(delta);
 };
 
 const PLAYER_WIDTH = 32;
@@ -147,16 +185,35 @@ const calculatePlayerShots = (delta) => {
 const renderPlayer = (delta) => {
 
     g.fillStyle = 'red';
-    g.fillRect(PLAYER_POSITION.x - (PLAYER_WIDTH/2),
-        PLAYER_POSITION.y - (PLAYER_HEIGHT / 2),
+
+    g.save();
+
+    g.translate(PLAYER_POSITION.x - (PLAYER_WIDTH/2),
+        PLAYER_POSITION.y - (PLAYER_HEIGHT / 2))
+
+    if(analyzer) {
+        var rms = analyzer.getLevel();
+
+        // if(rms > 0.4) {
+        //     console.log("BEAT");
+        // }
+        // else {
+        //     console.log("-");
+        // }
+    }
+
+    g.fillRect(0,
+        0,
         PLAYER_WIDTH,
         PLAYER_HEIGHT);
 
     g.fillStyle = 'black';
-    g.fillRect(PLAYER_POSITION.x,
-        PLAYER_POSITION.y,
+    g.fillRect(0,
+        0,
         2,
         2);
+
+    g.restore();
 
     renderPlayerShots(delta);
 };
@@ -174,3 +231,47 @@ const renderPlayerShots = (delta) => {
 
 
 };
+
+const CANVAS_BEAT_WIDTH = 512;
+const CANVAS_BEAT_HEIGHT = 50;
+
+const renderTimeline = (delta) => {
+
+
+    tg.save();
+
+
+    tg.fillStyle = 'blue';
+    tg.fillRect(0,0,CANVAS_BEAT_WIDTH, CANVAS_BEAT_HEIGHT);
+
+
+    if(backgroundMusic) {
+        let now = backgroundMusic.currentTime();
+
+        let midpoint = CANVAS_BEAT_WIDTH / 2;
+
+        PEAKS.forEach((peak) => {
+            tg.save();
+
+            let diff = (now - peak) * 100;
+
+            tg.translate(midpoint, 0);
+
+
+            tg.fillStyle = 'black';
+
+            if(diff < 10 && diff > -10) {
+                tg.fillStyle = 'white';
+            }
+
+            tg.fillRect(diff, 0, 2, CANVAS_BEAT_HEIGHT);
+
+
+
+            tg.restore();
+        });
+
+    }
+
+    tg.restore();
+}
