@@ -75,7 +75,8 @@ function setup() {
         PEAKS = peaks;
 
         musicLoaded = true;
-    }, 0.5, 0.1, 300);
+    // }, 0.5, 0.1, 300); // PRODUCTION SETTINGS
+    }, 0.5, 0.1, 900); // DEV SETTINGS
 };
 // p5 function
 function draw() {
@@ -88,6 +89,7 @@ let imgLightning = new Image();
 let imgRocketButt = new Image();
 let imgBackground = new Image();
 let imgBackgroundOverlay = new Image();
+let imgBullets = new Image();
 
 const loadImages = () => {
 
@@ -105,6 +107,9 @@ const loadImages = () => {
 
     imgBackgroundOverlay.load("res/background-overlay.png");
     document.getElementById("imagestore").appendChild(imgBackgroundOverlay);
+
+    imgBullets.load("res/bullet-collection.png");
+    document.getElementById("imagestore").appendChild(imgBullets);
 };
 
 
@@ -115,9 +120,10 @@ const checkForEverythingLoaded = () => {
 
     allLoaded = allLoaded && imgPlayerShip.completedPercentage > 99;
     allLoaded = allLoaded && imgLightning.completedPercentage > 99;
-    // allLoaded = allLoaded && imgRocketButt.completedPercentage > 99;
+    allLoaded = allLoaded && imgRocketButt.completedPercentage > 99;
     allLoaded = allLoaded && imgBackground.completedPercentage > 99;
     allLoaded = allLoaded && imgBackgroundOverlay.completedPercentage > 99;
+    allLoaded = allLoaded && imgBullets.completedPercentage > 99;
 
     if(!allLoaded) {
         console.log("still loading");
@@ -245,12 +251,13 @@ const pressShoot = (keyCode) => {
                 x: PLAYER_POSITION.x,
                 y: PLAYER_POSITION.y,
                 type: 'bullet',
+                level: 3,
                 ttl: 3000,
                 maxttl: 3000
             };
 
-            shot.type = 'light';
-            shot.ttl = 200;
+            // shot.type = 'light';
+            // shot.ttl = 200;
 
             shot.maxttl = shot.ttl;
 
@@ -468,14 +475,45 @@ const renderPlayerShots = (delta) => {
 
 };
 
+const BULLET_DIMS = {
+    1: {
+        w: 4, h: 7,
+        sx: 0
+    },
+    2: {
+        w: 8, h: 24,
+        sx: 4
+    },
+    3: {
+        w: 16, h: 32,
+        sx: 12
+    }
+};
+
+// height of the image
+const IMG_BULLET_HEIGHT = 32;
 
 const renderBullet = (shot) => {
     g.fillStyle = 'black';
 
-    g.fillRect(shot.x,
-        shot.y,
-        2,
-        2);
+    g.save();
+
+    g.translate(shot.x, shot.y);
+
+    let bullet = BULLET_DIMS[shot.level];
+
+    g.drawImage(imgBullets,
+        bullet.sx,
+        IMG_BULLET_HEIGHT - bullet.h,
+        bullet.w,
+        bullet.h,
+        -(bullet.w/2),
+        0,
+        bullet.w,
+        bullet.h
+    );
+
+    g.restore();
 };
 
 IMG_LIGHT_WIDTH = 48;
