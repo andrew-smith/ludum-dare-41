@@ -75,8 +75,8 @@ function setup() {
         PEAKS = peaks;
 
         musicLoaded = true;
-    // }, 0.5, 0.1, 300); // PRODUCTION SETTINGS
-    }, 0.5, 0.1, 900); // DEV SETTINGS
+    }, 0.5, 0.1, 300); // PRODUCTION SETTINGS
+    // }, 0.5, 0.1, 900); // DEV SETTINGS
 };
 // p5 function
 function draw() {
@@ -287,6 +287,18 @@ const pressShoot = (keyCode) => {
             shot.maxttl = shot.ttl;
 
             PLAYER_SHOTS.push(shot);
+
+            if(shotsInARow > 25) {
+                let lightning = {
+                    x: PLAYER_POSITION.x,
+                    y: PLAYER_POSITION.y,
+                    type: 'light',
+                    ttl: 250,
+                    maxttl: 250
+                };
+
+                PLAYER_SHOTS.push(lightning);
+            }
         }
 
         shotTextTtl = MAX_SHOT_TEXT_TTL;
@@ -350,7 +362,7 @@ const calculatePlayerShots = (delta) => {
 
     // player can only have x bullets in flight at once.
     // keep newer ones, discard old ones
-    while(PLAYER_SHOTS.length > 10) {
+    while(PLAYER_SHOTS.length > 25) {
         PLAYER_SHOTS.shift();
     }
 
