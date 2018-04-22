@@ -15,18 +15,24 @@ var LEVEL1 = [
         spawnTime: 1,
         deposeTime: 15,
         type: TYPE_SCATTER_SHOT,
-        spawnLocation: [MIDDLE]
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 1,
+        deposeTime: 15,
+        type: TYPE_SCATTER_SHOT,
+        spawnLocation: [HARD_LEFT]
     },
     {
         spawnTime: 8,
         deposeTime: 15,
-        type: TYPE_BASIC,
+        type: TYPE_BASIC_SHOT,
         spawnLocation: [MIDDLE]
     },
     {
         spawnTime: 12,
         deposeTime: 20,
-        type: TYPE_BASIC,
+        type: TYPE_BASIC_SHOT,
         spawnLocation: [RIGHT, LEFT]
     }
 ];

@@ -62,6 +62,8 @@ const createBasicEnemy = (x, y) => {
     return enemy;
 };
 
+const IMG_NME_BULLET_SIZE = 8;
+
 // creates a shot object that sends it out via a vector
 const createVectorShot = (pos, vec) => {
     let shot = {
@@ -74,12 +76,23 @@ const createVectorShot = (pos, vec) => {
         },
         draw: (delta) => {
             g.fillStyle = 'red';
-            g.fillRect(
-                shot.x,
-                shot.y,
-                20,
-                20
+
+            g.save();
+
+            g.translate(shot.x, shot.y);
+
+            g.drawImage(imgEnemyBullets,
+                0,
+                16,
+                IMG_NME_BULLET_SIZE,
+                IMG_NME_BULLET_SIZE,
+                -(IMG_NME_BULLET_SIZE/2),
+                -(IMG_NME_BULLET_SIZE/2),
+                IMG_NME_BULLET_SIZE,
+                IMG_NME_BULLET_SIZE
             );
+
+            g.restore();
         }
     };
 
@@ -89,7 +102,7 @@ const createVectorShot = (pos, vec) => {
 const createBasicShotEnemy = (x, y) => {
     let enemy = createBasicEnemy(x, y);
 
-    enemy.shootCounter = 0;
+    enemy.shootCounter = 500;
 
     enemy.update = (delta) => {
         enemy.y += delta * 0.1;

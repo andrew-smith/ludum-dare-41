@@ -860,7 +860,7 @@ const ENEMY_SHOTS = [];
 // called when an enemy emits a shot
 const emitShot = (shot) => {
 
-    while(ENEMY_SHOTS.length > 100) {
+    while(ENEMY_SHOTS.length > 35) {
         ENEMY_SHOTS.shift();
     }
 
