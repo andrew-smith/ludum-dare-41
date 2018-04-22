@@ -53,11 +53,13 @@ $(() => {
 
 let backgroundMusic = null;
 let playerDeathSound = null;
+let sadTromboneSound = null;
 // p5 function
 function preload() {
     console.log("preload");
     backgroundMusic = loadSound("res/bensound-moose.mp3");
     playerDeathSound = loadSound("res/wilhelm-scream.mp3");
+    sadTromboneSound = loadSound("res/sad-trombone.mp3");
 
     loadImages();
 };
@@ -165,13 +167,21 @@ const checkForEverythingLoaded = () => {
 
 
 let GAMEOVER = false;
+let PLAYER_DEAD = false;
 
 const endGame = () => {
     if(!GAMEOVER) {
         GAMEOVER = true;
 
         backgroundMusic.stop();
-        playerDeathSound.play();
+
+        if(PLAYER_DEAD) {
+            playerDeathSound.play();
+            playerDeathSound.onended(() => {
+                sadTromboneSound.play();
+            });
+        }
+
     }
 
 
@@ -898,6 +908,8 @@ const updateEnemyShots = (delta) => {
         shot.update(delta);
 
         if(checkInObject(shot, playerBounds)) {
+
+            PLAYER_DEAD = true;
             endGame();
             console.log("Player Hit!");
         }
