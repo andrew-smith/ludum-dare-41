@@ -873,10 +873,32 @@ const renderEnemyShots = (delta) => {
     });
 };
 
+const CANVAS_WIDTH2 = CANVAS_WIDTH * 2;
+const CANVAS_HEIGHT2 = CANVAS_HEIGHT * 2;
+
 const updateEnemyShots = (delta) => {
-    ENEMY_SHOTS.forEach((shot) => {
+
+    let disposeShots = [];
+
+    for(var i=0; i<ENEMY_SHOTS.length; i++) {
+        let shot = ENEMY_SHOTS[i];
+
         shot.update(delta);
+
+        if(shot.y > CANVAS_HEIGHT2 || shot.y < -CANVAS_HEIGHT2) {
+            disposeShots.push(i);
+        }
+        else if(shot.x < -CANVAS_WIDTH2 || shot.x > CANVAS_WIDTH2) {
+            disposeShots.push(i);
+        }
+    }
+
+    let shotsDeleted = 0;
+    disposeShots.forEach((idx) => {
+        ENEMY_SHOTS.splice(idx - shotsDeleted, 1);
+        shotsDeleted++;
     });
+
 };
 
 
