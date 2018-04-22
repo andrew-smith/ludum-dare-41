@@ -411,8 +411,8 @@ let bgTwinkle = 0;
 
 const renderBackground = (delta) => {
 
-    backgroundOffset += delta * 0.02;
-    backgroundOverlayOffset += delta * 0.06;
+    backgroundOffset += delta * 0.004;
+    backgroundOverlayOffset += delta * 0.02;
 
     g.fillStyle = 'blue';
     g.fillRect(0,0,CANVAS_WIDTH, CANVAS_HEIGHT);
