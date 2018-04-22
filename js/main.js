@@ -87,6 +87,7 @@ let imgPlayerShip = new Image();
 let imgLightning = new Image();
 let imgRocketButt = new Image();
 let imgBackground = new Image();
+let imgBackgroundOverlay = new Image();
 
 const loadImages = () => {
 
@@ -101,6 +102,9 @@ const loadImages = () => {
 
     imgBackground.load("res/background.png");
     document.getElementById("imagestore").appendChild(imgBackground);
+
+    imgBackgroundOverlay.load("res/background-overlay.png");
+    document.getElementById("imagestore").appendChild(imgBackgroundOverlay);
 };
 
 
@@ -113,6 +117,7 @@ const checkForEverythingLoaded = () => {
     allLoaded = allLoaded && imgLightning.completedPercentage > 99;
     // allLoaded = allLoaded && imgRocketButt.completedPercentage > 99;
     allLoaded = allLoaded && imgBackground.completedPercentage > 99;
+    allLoaded = allLoaded && imgBackgroundOverlay.completedPercentage > 99;
 
     if(!allLoaded) {
         console.log("still loading");
@@ -337,7 +342,6 @@ const IMG_BG_WIDTH = 256;
 const IMG_BG_HEIGHT = 320;
 
 let bgPattern = null;
-
 const getBgPattern = () => {
     if(!bgPattern) {
         bgPattern = g.createPattern(imgBackground, "repeat");
@@ -346,12 +350,22 @@ const getBgPattern = () => {
     return bgPattern;
 }
 
+let bgOverlay = null;
+const getBgOverlayPattern = () => {
+    if(!bgOverlay) {
+        bgOverlay = g.createPattern(imgBackgroundOverlay, "repeat");
+    }
+    return bgOverlay;
+}
+
 let backgroundOffset = 0;
+let backgroundOverlayOffset = 0;
 let bgTwinkle = 0;
 
 const renderBackground = (delta) => {
 
-    backgroundOffset += delta * 0.06;
+    backgroundOffset += delta * 0.02;
+    backgroundOverlayOffset += delta * 0.06;
 
     g.fillStyle = 'blue';
     g.fillRect(0,0,CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -359,14 +373,20 @@ const renderBackground = (delta) => {
     let twinkleOffset = 0;
 
     g.save();
-
     g.translate(0, backgroundOffset);
-
     g.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     g.fillStyle = getBgPattern();
     g.fill();
-
     g.restore();
+
+
+    g.save();
+    g.translate(0, backgroundOverlayOffset);
+    g.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    g.fillStyle = getBgOverlayPattern();
+    g.fill();
+    g.restore();
+
 
 }
 
