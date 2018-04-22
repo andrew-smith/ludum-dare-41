@@ -65,6 +65,10 @@ let PEAKS = [];
 
 let musicLoaded = false;
 
+// unique ids go in here to indicate they have spawned
+// already. (bug with addCue(...))
+let ENEMY_SPAWN_MAP = {};
+
 // p5 function
 function setup() {
 
@@ -75,8 +79,11 @@ function setup() {
         PEAKS = peaks;
 
         let peakIndex = 0;
+        let enemyUniqueIndex = 0;
 
         LEVEL1.forEach((enemy) => {
+            enemy._id = enemyUniqueIndex; // to stop spawning twice
+            enemyUniqueIndex++;
             backgroundMusic.addCue(enemy.spawnTime, spawnEnemy, enemy);
         });
 
@@ -284,11 +291,14 @@ const pressShoot = (keyCode) => {
                 y: PLAYER_POSITION.y,
                 type: 'bullet',
                 level: 1,
+                damage: 100,
                 ttl: 3000,
                 maxttl: 3000
             };
 
             shot.level = clamp(currentShotIndex, 1, 3);
+
+            shot.damage = shot.damage * shot.level;
 
             // shot.type = 'light';
             // shot.ttl = 200;
@@ -302,6 +312,7 @@ const pressShoot = (keyCode) => {
                     x: PLAYER_POSITION.x,
                     y: PLAYER_POSITION.y,
                     type: 'light',
+                    damage: 1, //over 250ms - so a lot!
                     ttl: 250,
                     maxttl: 250
                 };
@@ -375,21 +386,39 @@ const calculatePlayerShots = (delta) => {
         PLAYER_SHOTS.shift();
     }
 
+    // remove any shots that have been used or expired
+    let shotsToRemove = [];
+    let amountOfShotsRemoved = 0;
+    for(var i=0; i<PLAYER_SHOTS.length; i++) {
+        if(PLAYER_SHOTS[i].ttl <= 0) {
+            shotsToRemove.push(i);
+        }
+    }
+    shotsToRemove.forEach((idx) => {
+        PLAYER_SHOTS.splice(idx - amountOfShotsRemoved);
+        amountOfShotsRemoved++;
+    });
+
+
+
     PLAYER_SHOTS.forEach((shot) => {
 
         if(shot.type === 'bullet') {
             shot.y -= movement;
+
+            ENEMIES.forEach((enemy) => {
+                if(enemy.contains(shot.x, shot.y)) {
+                    enemy.hit(shot.damage);
+                    shot.ttl = -1;
+                }
+            });
         }
-        if(shot.type === 'light') {
+        else if(shot.type === 'light') {
             shot.x = PLAYER_POSITION.x;
             shot.y = PLAYER_POSITION.y;
         }
 
         shot.ttl -= delta;
-
-        if(shot.ttl < 0) {
-            shot.expired = true;
-        }
     });
 };
 
@@ -683,8 +712,36 @@ const ENEMY_HEIGHT = 30;
 const ENEMIES = [];
 
 const createEnemy = (x, y, type) => {
-    let enemy = {x: x, y:y, type:type};
+    let enemy = {x: x, y:y, type:type, health: 100};
 
+    enemy.contains = (checkX, checkY) => {
+
+        let contains = checkInObject({
+            x: checkX, y: checkY
+        }, {
+            x: enemy.x,
+            y: enemy.y,
+            width: ENEMY_WIDTH,
+            height: ENEMY_HEIGHT
+        });
+
+        if(contains) {
+            console.log("HIT");
+        }
+        else {
+            console.log("MISS");
+        }
+
+        return contains;
+    };
+
+    enemy.hit = (damage) => {
+        enemy.health -= damage;
+    };
+
+    enemy.isDead = () => {
+        return enemy.health <= 0;
+    };
 
     enemy.update = (delta) => {
         enemy.y += delta * 0.1;
@@ -729,22 +786,31 @@ let SPAWN_WIDTH_PART = CANVAS_WIDTH / 6;
 
 const spawnEnemy = (def) => {
 
-    let startingLoc = def.spawnLocation[Math.floor(Math.random() * def.spawnLocation.length)]
+    if(!ENEMY_SPAWN_MAP[def._id]) { // fix for accidental double spawns
+        let startingLoc = def.spawnLocation[Math.floor(Math.random() * def.spawnLocation.length)]
 
-    // start by default in middle
-    let startX = SPAWN_WIDTH_PART * 3;
+        // start by default in middle
+        let startX = SPAWN_WIDTH_PART * 3;
 
-    switch(startingLoc){
-        case HARD_LEFT: startX = SPAWN_WIDTH_PART * 1; break;
-        case LEFT:      startX = SPAWN_WIDTH_PART * 2; break;
-        case RIGHT:     startX = SPAWN_WIDTH_PART * 4; break;
-        case HARD_RIGHT:startX = SPAWN_WIDTH_PART * 5; break;
+        switch(startingLoc){
+            case HARD_LEFT: startX = SPAWN_WIDTH_PART * 1; break;
+            case LEFT:      startX = SPAWN_WIDTH_PART * 2; break;
+            case RIGHT:     startX = SPAWN_WIDTH_PART * 4; break;
+            case HARD_RIGHT:startX = SPAWN_WIDTH_PART * 5; break;
+        }
+
+        let enemy = createEnemy(startX, -ENEMY_HEIGHT);
+        ENEMIES.push(enemy);
+
+        console.log(enemy);
+        // indicate that enemy has spawned
+        ENEMY_SPAWN_MAP[def._id] = true;
+    }
+    else {
+        console.log("addCue bug triggered");
     }
 
-    let enemy = createEnemy(startX, -ENEMY_HEIGHT);
-    ENEMIES.push(enemy);
 
-    console.log(enemy);
 
 };
 
@@ -786,4 +852,23 @@ const renderEnemies = (delta) => {
     ENEMIES.forEach((e) => {
         e.draw(delta);
     });
+};
+
+
+
+// point: {x, y}
+// object: {x, y, width, height} // point is in the centre
+const checkInObject = (p,o) => {
+
+    // half calcs
+    let hw = o.width / 2;
+    let hh = o.height / 2;
+
+    if(p.x >= o.x - hw && p.x <= o.x + hw) {
+        if(p.y >= o.y - hh && p.y <= o.y + hh) {
+            return true;
+        }
+    }
+
+    return false;
 };
