@@ -85,6 +85,9 @@ function draw() {
 
 let imgPlayerShip = new Image();
 let imgLightning = new Image();
+let imgRocketButt = new Image();
+let imgBackground = new Image();
+
 const loadImages = () => {
 
     imgPlayerShip.load("res/Main-Ships.png");
@@ -92,6 +95,12 @@ const loadImages = () => {
 
     imgLightning.load("res/lightning-1.png");
     document.getElementById("imagestore").appendChild(imgLightning);
+
+    imgRocketButt.load("res/rocket-butts.png");
+    document.getElementById("imagestore").appendChild(imgRocketButt);
+
+    imgBackground.load("res/background.png");
+    document.getElementById("imagestore").appendChild(imgBackground);
 };
 
 
@@ -102,6 +111,8 @@ const checkForEverythingLoaded = () => {
 
     allLoaded = allLoaded && imgPlayerShip.completedPercentage > 99;
     allLoaded = allLoaded && imgLightning.completedPercentage > 99;
+    allLoaded = allLoaded && imgRocketButt.completedPercentage > 99;
+    allLoaded = allLoaded && imgBackground.completedPercentage > 99;
 
     if(!allLoaded) {
         console.log("still loading");
@@ -131,13 +142,6 @@ const gameloop = () => {
 
     playerActions(delta);
 
-    if(analyzer) {
-        var rms = analyzer.getLevel();
-
-
-    }
-
-
     g.save();
     g.imageSmoothingEnabled = false;
     render(delta);
@@ -160,6 +164,8 @@ const render = (delta) => {
     renderBackground(delta);
 
     renderPlayer(delta);
+
+    renderHud(delta);
 
     renderTimeline(delta);
 };
@@ -187,7 +193,7 @@ const pressShoot = (keyCode) => {
         // find the closest peak
         let closestPeak = 99999999;
         let closestDiff = 99999999;
-        peaksFired[closestPeak] = 'bad';
+        peaksFired[closestPeak] = 'miss';
 
         PEAKS.forEach((peak) => {
             let diff = now - peak;
@@ -206,8 +212,6 @@ const pressShoot = (keyCode) => {
 
         });
 
-        console.log("DIFF: " + closestDiff);
-
         if(closestDiff < 0.3) {
             peaksFired[closestPeak] = 'bad';
         }
@@ -224,11 +228,14 @@ const pressShoot = (keyCode) => {
             peaksFired[closestPeak] = "perfect";
         }
 
+        let shotResult = 'miss';
+
         // this means we fired
         if(peaksFired[closestPeak] && closestDiff < 0.3) {
             flashIndex = 0;
 
-            console.log("fire!");
+            shotResult = peaksFired[closestPeak];
+
             let shot = {
                 x: PLAYER_POSITION.x,
                 y: PLAYER_POSITION.y,
@@ -245,7 +252,11 @@ const pressShoot = (keyCode) => {
             PLAYER_SHOTS.push(shot);
         }
 
-        console.log(peaksFired[closestPeak]);
+        shotTextTtl = MAX_SHOT_TEXT_TTL;
+        shotText = shotResult;
+
+
+        console.log(shotResult);
 
 
         needsReload = true;
@@ -254,7 +265,6 @@ const pressShoot = (keyCode) => {
 
 const releaseShoot = (keyCode) => {
     if(keyCode === KEY_SPACE) {
-        console.log("Reloading")
         needsReload = false;
     }
 };
@@ -323,12 +333,64 @@ const calculatePlayerShots = (delta) => {
 };
 
 
+const IMG_BG_WIDTH = 256;
+const IMG_BG_HEIGHT = 320;
+
+let bgPattern = null;
+
+const getBgPattern = () => {
+    if(!bgPattern) {
+        bgPattern = g.createPattern(imgBackground, "repeat");
+    }
+
+    return bgPattern;
+}
+
+let backgroundOffset = 0;
+let bgTwinkle = 0;
+
 const renderBackground = (delta) => {
+
+    backgroundOffset += delta * 0.06;
 
     g.fillStyle = 'blue';
     g.fillRect(0,0,CANVAS_WIDTH, CANVAS_HEIGHT);
 
+    let twinkleOffset = 0;
+
+    g.save();
+
+    g.translate(0, backgroundOffset);
+
+    g.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    g.fillStyle = getBgPattern();
+    g.fill();
+
+    g.restore();
+
 }
+
+let shotText = "";
+let shotTextTtl = 0;
+const MAX_SHOT_TEXT_TTL = 500;
+
+const renderHud = (delta) => {
+
+    shotTextTtl -= delta;
+
+    if(shotTextTtl < 0) {
+        shotTextTtl = 0;
+    }
+
+    g.save();
+
+    g.globalAlpha = (shotTextTtl / MAX_SHOT_TEXT_TTL);
+    g.fillStyle = 'pink';
+    g.fillText(shotText, 5, 30);
+
+    g.restore();
+
+};
 
 const renderPlayer = (delta) => {
 
@@ -344,6 +406,9 @@ const renderPlayer = (delta) => {
     //     -PLAYER_HEIGHT / 2,
     //     PLAYER_WIDTH,
     //     PLAYER_HEIGHT);
+
+    // ship flame
+
 
 
     g.drawImage(imgPlayerShip,
@@ -461,9 +526,15 @@ const renderTimeline = (delta) => {
 
 
     if(backgroundMusic) {
-        let now = backgroundMusic.currentTime();
-
         let midpoint = CANVAS_BEAT_WIDTH / 2;
+
+        // area in the middle to indicate where to hit the beat
+        const hitbar_width = 5
+        tg.fillStyle = 'grey';
+        tg.fillRect(midpoint - (hitbar_width/2), 0, hitbar_width, CANVAS_BEAT_HEIGHT);
+
+
+        let now = backgroundMusic.currentTime();
 
         PEAKS.forEach((peak) => {
             tg.save();
@@ -472,17 +543,20 @@ const renderTimeline = (delta) => {
 
             tg.translate(midpoint, 0);
 
+            let beatWidth = 2;
+
 
             tg.fillStyle = 'black';
 
             if(peaksFired[peak]) {
                 tg.fillStyle = 'grey';
             }
-            if(diff < 10 && diff > -10) {
-                tg.fillStyle = 'white';
+            if(diff < 7 && diff > -7) {
+                tg.fillStyle = 'red';
+                beatWidth = 4;
             }
 
-            tg.fillRect(diff, 0, 2, CANVAS_BEAT_HEIGHT);
+            tg.fillRect(diff, 0, beatWidth, CANVAS_BEAT_HEIGHT);
 
 
 
