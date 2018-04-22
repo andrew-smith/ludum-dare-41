@@ -103,6 +103,7 @@ let imgRocketButt = new Image();
 let imgBackground = new Image();
 let imgBackgroundOverlay = new Image();
 let imgBullets = new Image();
+let imgBeatTiming = new Image();
 
 const loadImages = () => {
 
@@ -123,6 +124,9 @@ const loadImages = () => {
 
     imgBullets.load("res/bullet-collection.png");
     document.getElementById("imagestore").appendChild(imgBullets);
+
+    imgBeatTiming.load("res/beat-timing.png");
+    document.getElementById("imagestore").appendChild(imgBeatTiming);
 };
 
 
@@ -137,6 +141,7 @@ const checkForEverythingLoaded = () => {
     allLoaded = allLoaded && imgBackground.completedPercentage > 99;
     allLoaded = allLoaded && imgBackgroundOverlay.completedPercentage > 99;
     allLoaded = allLoaded && imgBullets.completedPercentage > 99;
+    allLoaded = allLoaded && imgBeatTiming.completedPercentage > 99;
 
     if(!allLoaded) {
         console.log("still loading");
@@ -300,9 +305,6 @@ const pressShoot = (keyCode) => {
 
             shot.damage = shot.damage * shot.level;
 
-            // shot.type = 'light';
-            // shot.ttl = 200;
-
             shot.maxttl = shot.ttl;
 
             PLAYER_SHOTS.push(shot);
@@ -416,6 +418,24 @@ const calculatePlayerShots = (delta) => {
         else if(shot.type === 'light') {
             shot.x = PLAYER_POSITION.x;
             shot.y = PLAYER_POSITION.y;
+
+            ENEMIES.forEach((enemy) => {
+
+                let hit = checkInObject({
+                    x: enemy.x, y: enemy.y
+                }, {
+                    x: PLAYER_POSITION.x,
+                    y: PLAYER_POSITION.y / 2, // halfway up screen
+                    width: IMG_LIGHT_WIDTH,
+                    height: PLAYER_POSITION.y
+                });
+
+                if(hit) {
+                    enemy.hit(shot.damage * delta);
+                    console.log(enemy.health);
+                }
+            });
+
         }
 
         shot.ttl -= delta;
@@ -479,6 +499,8 @@ let shotText = "";
 let shotTextTtl = 0;
 const MAX_SHOT_TEXT_TTL = 500;
 
+const IMG_BEAT_WIDTH = 65;
+const IMG_BEAT_HEIGHT = 32;
 const renderHud = (delta) => {
 
     shotTextTtl -= delta;
@@ -490,9 +512,54 @@ const renderHud = (delta) => {
     g.save();
 
     g.globalAlpha = (shotTextTtl / MAX_SHOT_TEXT_TTL);
-    g.fillStyle = 'pink';
-    g.fillText(shotText, 5, 30);
 
+    g.translate(5, 5);
+
+    // background full colour
+    g.drawImage(imgBeatTiming,
+        0,
+        0,
+        IMG_BEAT_WIDTH,
+        IMG_BEAT_HEIGHT,
+        0,
+        0,
+        IMG_BEAT_WIDTH,
+        IMG_BEAT_HEIGHT
+    );
+
+    // background highlight
+    g.drawImage(imgBeatTiming,
+        IMG_BEAT_WIDTH,
+        0,
+        IMG_BEAT_WIDTH,
+        IMG_BEAT_HEIGHT,
+        0,
+        0,
+        IMG_BEAT_WIDTH,
+        IMG_BEAT_HEIGHT
+    );
+
+    // actual text
+    let offset = IMG_BEAT_WIDTH*2; // miss
+
+    switch (shotText) {
+        case 'bad': offset = IMG_BEAT_WIDTH*3; break;
+        case 'ok': offset = IMG_BEAT_WIDTH*4; break;
+        case 'good': offset = IMG_BEAT_WIDTH*5; break;
+        case 'great': offset = IMG_BEAT_WIDTH*6; break;
+        case 'perfect': offset = IMG_BEAT_WIDTH*7; break;
+    }
+
+    g.drawImage(imgBeatTiming,
+        offset,
+        0,
+        IMG_BEAT_WIDTH,
+        IMG_BEAT_HEIGHT,
+        0,
+        0,
+        IMG_BEAT_WIDTH,
+        IMG_BEAT_HEIGHT
+    );
     g.restore();
 
 };
@@ -716,6 +783,10 @@ const createEnemy = (x, y, type) => {
 
     enemy.contains = (checkX, checkY) => {
 
+        if(enemy.isDead()) {
+            return false;
+        }
+
         let contains = checkInObject({
             x: checkX, y: checkY
         }, {
@@ -748,6 +819,10 @@ const createEnemy = (x, y, type) => {
     };
 
     enemy.draw = (delta) => {
+
+        if(enemy.isDead()) {
+            return;
+        }
 
         g.save();
 
@@ -830,7 +905,7 @@ const enemyActions = (delta) => {
     for(var i=0; i<ENEMIES.length; i++) {
         let enemy = ENEMIES[i];
 
-        if(enemy.dead) {
+        if(enemy.isDead()) {
             enemiesForRemoval.push(i);
         }
         else if(enemy.y > CANVAS_HEIGHT + ENEMY_HEIGHT) {
