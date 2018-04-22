@@ -194,6 +194,17 @@ let PLAYER_SHOTS = [];
 let needsReload = false;
 let peaksFired = {};
 
+// where the player is in their progression
+// to get more powerfull bullets
+let currentShotIndex = 0;
+
+// how many shots are not missed (progression up bullets)
+let shotsInARow = 0;
+
+function clamp(num, min, max) {
+    return Math.floor(num <= min ? min : num >= max ? max : num);
+}
+
 const pressShoot = (keyCode) => {
     if(keyCode === KEY_SPACE && !needsReload) {
         // then player can fire
@@ -244,6 +255,18 @@ const pressShoot = (keyCode) => {
         // this means we fired
         if(peaksFired[closestPeak] && closestDiff < 0.3) {
             flashIndex = 0;
+            shotsInARow++;
+
+            currentShotIndex = 1;
+            if(shotsInARow > 5) {
+                currentShotIndex = 2;
+            }
+            if(shotsInARow > 15) {
+                currentShotIndex = 3;
+            }
+
+            console.log("Shots in a row: " + shotsInARow);
+            console.log("Shot index    : " + currentShotIndex);
 
             shotResult = peaksFired[closestPeak];
 
@@ -251,10 +274,12 @@ const pressShoot = (keyCode) => {
                 x: PLAYER_POSITION.x,
                 y: PLAYER_POSITION.y,
                 type: 'bullet',
-                level: 3,
+                level: 1,
                 ttl: 3000,
                 maxttl: 3000
             };
+
+            shot.level = clamp(currentShotIndex, 1, 3);
 
             // shot.type = 'light';
             // shot.ttl = 200;
@@ -269,6 +294,9 @@ const pressShoot = (keyCode) => {
 
 
         console.log(shotResult);
+        if(shotResult === 'miss') {
+            shotsInARow = 0;
+        }
 
 
         needsReload = true;
