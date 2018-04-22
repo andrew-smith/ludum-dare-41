@@ -52,10 +52,12 @@ $(() => {
 });
 
 let backgroundMusic = null;
+let playerDeathSound = null;
 // p5 function
 function preload() {
     console.log("preload");
     backgroundMusic = loadSound("res/bensound-moose.mp3");
+    playerDeathSound = loadSound("res/wilhelm-scream.mp3");
 
     loadImages();
 };
@@ -167,6 +169,9 @@ let GAMEOVER = false;
 const endGame = () => {
     if(!GAMEOVER) {
         GAMEOVER = true;
+
+        backgroundMusic.stop();
+        playerDeathSound.play();
     }
 
 
@@ -880,10 +885,22 @@ const updateEnemyShots = (delta) => {
 
     let disposeShots = [];
 
+    let playerBounds = {
+        x: PLAYER_POSITION.x,
+        y: PLAYER_POSITION.y,
+        width: PLAYER_WIDTH / 3,
+        height: PLAYER_HEIGHT / 3
+    };
+
     for(var i=0; i<ENEMY_SHOTS.length; i++) {
         let shot = ENEMY_SHOTS[i];
 
         shot.update(delta);
+
+        if(checkInObject(shot, playerBounds)) {
+            endGame();
+            console.log("Player Hit!");
+        }
 
         if(shot.y > CANVAS_HEIGHT2 || shot.y < -CANVAS_HEIGHT2) {
             disposeShots.push(i);
