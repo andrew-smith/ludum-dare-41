@@ -5,9 +5,17 @@ const HARD_RIGHT = "hard_right",
       LEFT       = "left",
       HARD_LEFT  = "hard_left";
 
-const TYPE_BASIC = "enemy_basic";
+const TYPE_BASIC = "enemy_basic",
+      TYPE_BASIC_SHOT = "enemy_basic_shoot";
+
 
 var LEVEL1 = [
+    {
+        spawnTime: 1,
+        deposeTime: 15,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [MIDDLE]
+    },
     {
         spawnTime: 8,
         deposeTime: 15,

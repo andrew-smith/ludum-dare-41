@@ -171,6 +171,7 @@ const gameloop = () => {
 
     playerActions(delta);
     enemyActions(delta);
+    updateEnemyShots(delta);
 
     g.save();
     g.imageSmoothingEnabled = false;
@@ -194,6 +195,8 @@ const render = (delta) => {
     renderBackground(delta);
 
     renderEnemies(delta);
+
+    renderEnemyShots(delta);
 
     renderPlayer(delta);
 
@@ -814,6 +817,9 @@ const spawnEnemy = (def) => {
         if(def.type === TYPE_BASIC) {
             ENEMIES.push(createBasicEnemy(startX, -ENEMY_HEIGHT));
         }
+        else if(def.type === TYPE_BASIC_SHOT) {
+            ENEMIES.push(createBasicShotEnemy(startX, -ENEMY_HEIGHT));
+        }
 
         // indicate that enemy has spawned
         ENEMY_SPAWN_MAP[def._id] = true;
@@ -824,6 +830,30 @@ const spawnEnemy = (def) => {
 
 
 
+};
+
+const ENEMY_SHOTS = [];
+
+// called when an enemy emits a shot
+const emitShot = (shot) => {
+
+    while(ENEMY_SHOTS.length > 100) {
+        ENEMY_SHOTS.shift();
+    }
+
+    ENEMY_SHOTS.push(shot);
+};
+
+const renderEnemyShots = (delta) => {
+    ENEMY_SHOTS.forEach((shot) => {
+        shot.draw(delta);
+    });
+};
+
+const updateEnemyShots = (delta) => {
+    ENEMY_SHOTS.forEach((shot) => {
+        shot.update(delta);
+    });
 };
 
 
