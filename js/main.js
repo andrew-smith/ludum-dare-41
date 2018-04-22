@@ -88,8 +88,8 @@ function setup() {
         });
 
         musicLoaded = true;
-    // }, 0.5, 0.1, 300); // PRODUCTION SETTINGS
-    }, 0.5, 0.1, 900); // DEV SETTINGS
+    }, 0.5, 0.1, 300); // PRODUCTION SETTINGS
+    // }, 0.5, 0.1, 900); // DEV SETTINGS
 };
 // p5 function
 function draw() {
@@ -232,6 +232,8 @@ const pressShoot = (keyCode) => {
 
         // work out how many points
         let now = backgroundMusic.currentTime();
+
+        console.log(now);
 
         // find the closest peak
         let closestPeak = 99999999;
@@ -778,72 +780,6 @@ const ENEMY_HEIGHT = 30;
 // array of current live enemies
 const ENEMIES = [];
 
-const createEnemy = (x, y, type) => {
-    let enemy = {x: x, y:y, type:type, health: 100};
-
-    enemy.contains = (checkX, checkY) => {
-
-        if(enemy.isDead()) {
-            return false;
-        }
-
-        let contains = checkInObject({
-            x: checkX, y: checkY
-        }, {
-            x: enemy.x,
-            y: enemy.y,
-            width: ENEMY_WIDTH,
-            height: ENEMY_HEIGHT
-        });
-
-        if(contains) {
-            console.log("HIT");
-        }
-        else {
-            console.log("MISS");
-        }
-
-        return contains;
-    };
-
-    enemy.hit = (damage) => {
-        enemy.health -= damage;
-    };
-
-    enemy.isDead = () => {
-        return enemy.health <= 0;
-    };
-
-    enemy.update = (delta) => {
-        enemy.y += delta * 0.1;
-    };
-
-    enemy.draw = (delta) => {
-
-        if(enemy.isDead()) {
-            return;
-        }
-
-        g.save();
-
-        g.translate(enemy.x, enemy.y);
-
-        g.fillStyle = 'red';
-        g.fillRect(
-            -(ENEMY_WIDTH /2),
-            -(ENEMY_HEIGHT /2),
-            ENEMY_WIDTH,
-            ENEMY_HEIGHT
-        );
-
-        g.restore();
-
-    };
-
-    return enemy;
-};
-
-
 const spawnRandomEnemy = () => {
 
     if(ENEMIES.length < 8) {
@@ -874,10 +810,11 @@ const spawnEnemy = (def) => {
             case HARD_RIGHT:startX = SPAWN_WIDTH_PART * 5; break;
         }
 
-        let enemy = createEnemy(startX, -ENEMY_HEIGHT);
-        ENEMIES.push(enemy);
 
-        console.log(enemy);
+        if(def.type === TYPE_BASIC) {
+            ENEMIES.push(createBasicEnemy(startX, -ENEMY_HEIGHT));
+        }
+
         // indicate that enemy has spawned
         ENEMY_SPAWN_MAP[def._id] = true;
     }

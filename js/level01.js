@@ -9,14 +9,14 @@ const TYPE_BASIC = "enemy_basic";
 
 var LEVEL1 = [
     {
-        spawnTime: 5,
-        deposeTime: 10,
+        spawnTime: 8,
+        deposeTime: 15,
         type: TYPE_BASIC,
         spawnLocation: [MIDDLE]
     },
     {
-        spawnTime: 10,
-        deposeTime: 15,
+        spawnTime: 12,
+        deposeTime: 20,
         type: TYPE_BASIC,
         spawnLocation: [RIGHT, LEFT]
     }
