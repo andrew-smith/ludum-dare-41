@@ -74,9 +74,15 @@ function setup() {
     backgroundMusic.processPeaks((peaks) => {
         PEAKS = peaks;
 
+        let peakIndex = 0;
+
+        LEVEL1.forEach((enemy) => {
+            backgroundMusic.addCue(enemy.spawnTime, spawnEnemy, enemy);
+        });
+
         musicLoaded = true;
-    }, 0.5, 0.1, 300); // PRODUCTION SETTINGS
-    // }, 0.5, 0.1, 900); // DEV SETTINGS
+    // }, 0.5, 0.1, 300); // PRODUCTION SETTINGS
+    }, 0.5, 0.1, 900); // DEV SETTINGS
 };
 // p5 function
 function draw() {
@@ -152,6 +158,7 @@ const gameloop = () => {
     let delta = now - LAST_UPDATE;
 
     playerActions(delta);
+    enemyActions(delta);
 
     g.save();
     g.imageSmoothingEnabled = false;
@@ -173,6 +180,8 @@ const render = (delta) => {
 
     // background picture
     renderBackground(delta);
+
+    renderEnemies(delta);
 
     renderPlayer(delta);
 
@@ -665,3 +674,116 @@ const renderTimeline = (delta) => {
 
     tg.restore();
 }
+
+
+const ENEMY_WIDTH = 30;
+const ENEMY_HEIGHT = 30;
+
+// array of current live enemies
+const ENEMIES = [];
+
+const createEnemy = (x, y, type) => {
+    let enemy = {x: x, y:y, type:type};
+
+
+    enemy.update = (delta) => {
+        enemy.y += delta * 0.1;
+    };
+
+    enemy.draw = (delta) => {
+
+        g.save();
+
+        g.translate(enemy.x, enemy.y);
+
+        g.fillStyle = 'red';
+        g.fillRect(
+            -(ENEMY_WIDTH /2),
+            -(ENEMY_HEIGHT /2),
+            ENEMY_WIDTH,
+            ENEMY_HEIGHT
+        );
+
+        g.restore();
+
+    };
+
+    return enemy;
+};
+
+
+const spawnRandomEnemy = () => {
+
+    if(ENEMIES.length < 8) {
+        let randomStartX = Math.random() * CANVAS_WIDTH;
+        randomStartX = clamp(randomStartX, 0 + ENEMY_WIDTH, CANVAS_WIDTH - ENEMY_WIDTH);
+        let enemy = createEnemy(randomStartX, -ENEMY_HEIGHT);
+
+        ENEMIES.push(enemy);
+
+        console.log("Created enemy")
+    }
+};
+
+let SPAWN_WIDTH_PART = CANVAS_WIDTH / 6;
+
+const spawnEnemy = (def) => {
+
+    let startingLoc = def.spawnLocation[Math.floor(Math.random() * def.spawnLocation.length)]
+
+    // start by default in middle
+    let startX = SPAWN_WIDTH_PART * 3;
+
+    switch(startingLoc){
+        case HARD_LEFT: startX = SPAWN_WIDTH_PART * 1; break;
+        case LEFT:      startX = SPAWN_WIDTH_PART * 2; break;
+        case RIGHT:     startX = SPAWN_WIDTH_PART * 4; break;
+        case HARD_RIGHT:startX = SPAWN_WIDTH_PART * 5; break;
+    }
+
+    let enemy = createEnemy(startX, -ENEMY_HEIGHT);
+    ENEMIES.push(enemy);
+
+    console.log(enemy);
+
+};
+
+
+const enemyActions = (delta) => {
+
+    // only have x amount of enemies
+    while(ENEMIES.length > 10) {
+        ENEMIES.shift();
+    }
+    ENEMIES.forEach((e) => {
+        e.update(delta);
+    });
+
+    let enemiesForRemoval = [];
+
+    for(var i=0; i<ENEMIES.length; i++) {
+        let enemy = ENEMIES[i];
+
+        if(enemy.dead) {
+            enemiesForRemoval.push(i);
+        }
+        else if(enemy.y > CANVAS_HEIGHT + ENEMY_HEIGHT) {
+            // below the screen
+            enemiesForRemoval.push(i);
+        }
+    }
+
+    let enemiesDeleted = 0;
+    enemiesForRemoval.forEach((idx) => {
+        ENEMIES.splice(idx - enemiesDeleted, 1);
+        enemiesDeleted++;
+        console.log("removing emeny");
+    });
+};
+
+
+const renderEnemies = (delta) => {
+    ENEMIES.forEach((e) => {
+        e.draw(delta);
+    });
+};
