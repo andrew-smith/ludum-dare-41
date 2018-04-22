@@ -18,13 +18,6 @@ const createBasicEnemy = (x, y) => {
             height: ENEMY_HEIGHT
         });
 
-        if(contains) {
-            console.log("HIT");
-        }
-        else {
-            console.log("MISS");
-        }
-
         return contains;
     };
 
@@ -69,6 +62,30 @@ const createBasicEnemy = (x, y) => {
     return enemy;
 };
 
+// creates a shot object that sends it out via a vector
+const createVectorShot = (pos, vec) => {
+    let shot = {
+        x: pos.x,
+        y: pos.y,
+        vec: vec,
+        update: (delta) => {
+            shot.x += delta * vec.x;
+            shot.y += delta * vec.y;
+        },
+        draw: (delta) => {
+            g.fillStyle = 'red';
+            g.fillRect(
+                shot.x,
+                shot.y,
+                20,
+                20
+            );
+        }
+    };
+
+    return shot;
+};
+
 const createBasicShotEnemy = (x, y) => {
     let enemy = createBasicEnemy(x, y);
 
@@ -81,24 +98,46 @@ const createBasicShotEnemy = (x, y) => {
 
         if(enemy.shootCounter > 1000) {
 
-            console.log("emit shot");
-
-            let shot = {
+            let shot = createVectorShot({
                 x: enemy.x,
-                y: enemy.y,
-                update: (delta) => {
-                    shot.y += delta * 0.2
-                },
-                draw: (delta) => {
-                    g.fillStyle = 'red';
-                    g.fillRect(
-                        shot.x,
-                        shot.y,
-                        20,
-                        20
-                    );
-                }
-            };
+                y: enemy.y
+            }, {
+                x: 0,
+                y: 0.2
+            });
+            emitShot(shot);
+
+            enemy.shootCounter = 0;
+        }
+
+    };
+
+    return enemy;
+};
+
+const createScatterShotEnemy = (x, y) => {
+    let enemy = createBasicEnemy(x, y);
+
+    enemy.shootCounter = 0;
+    enemy.lastDegrees = 0;
+
+    enemy.update = (delta) => {
+        enemy.y += delta * 0.1;
+
+        enemy.shootCounter += delta;
+
+        if(enemy.shootCounter > 200) {
+
+            let vector = new Victor(0,0.2);
+            vector.rotateByDeg(enemy.lastDegrees);
+
+            enemy.lastDegrees += 30;
+
+            let shot = createVectorShot({
+                x: enemy.x,
+                y: enemy.y
+            },vector);
+
 
             emitShot(shot);
 

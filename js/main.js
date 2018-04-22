@@ -104,6 +104,7 @@ let imgBackground = new Image();
 let imgBackgroundOverlay = new Image();
 let imgBullets = new Image();
 let imgBeatTiming = new Image();
+let imgEnemyBullets = new Image();
 
 const loadImages = () => {
 
@@ -127,6 +128,9 @@ const loadImages = () => {
 
     imgBeatTiming.load("res/beat-timing.png");
     document.getElementById("imagestore").appendChild(imgBeatTiming);
+
+    imgEnemyBullets.load("res/enemy-bullets.png");
+    document.getElementById("imagestore").appendChild(imgEnemyBullets);
 };
 
 
@@ -142,6 +146,7 @@ const checkForEverythingLoaded = () => {
     allLoaded = allLoaded && imgBackgroundOverlay.completedPercentage > 99;
     allLoaded = allLoaded && imgBullets.completedPercentage > 99;
     allLoaded = allLoaded && imgBeatTiming.completedPercentage > 99;
+    allLoaded = allLoaded && imgEnemyBullets.completedPercentage > 99;
 
     if(!allLoaded) {
         console.log("still loading");
@@ -155,6 +160,17 @@ const checkForEverythingLoaded = () => {
         gameloop();
     }
 };
+
+
+let GAMEOVER = false;
+
+const endGame = () => {
+    if(!GAMEOVER) {
+        GAMEOVER = true;
+    }
+
+
+}
 
 // how long since last frame
 let LAST_UPDATE = 0;
@@ -179,7 +195,11 @@ const gameloop = () => {
     g.restore();
 
     LAST_UPDATE = now;
-    setTimeout(gameloop, 1);
+
+    if(!GAMEOVER) {
+        setTimeout(gameloop, 1);
+    }
+
 };
 
 const CANVAS_WIDTH = 256;
@@ -819,6 +839,9 @@ const spawnEnemy = (def) => {
         }
         else if(def.type === TYPE_BASIC_SHOT) {
             ENEMIES.push(createBasicShotEnemy(startX, -ENEMY_HEIGHT));
+        }
+        else if(def.type === TYPE_SCATTER_SHOT) {
+            ENEMIES.push(createScatterShotEnemy(startX, -ENEMY_HEIGHT));
         }
 
         // indicate that enemy has spawned
