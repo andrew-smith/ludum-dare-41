@@ -111,7 +111,7 @@ const checkForEverythingLoaded = () => {
 
     allLoaded = allLoaded && imgPlayerShip.completedPercentage > 99;
     allLoaded = allLoaded && imgLightning.completedPercentage > 99;
-    allLoaded = allLoaded && imgRocketButt.completedPercentage > 99;
+    // allLoaded = allLoaded && imgRocketButt.completedPercentage > 99;
     allLoaded = allLoaded && imgBackground.completedPercentage > 99;
 
     if(!allLoaded) {
