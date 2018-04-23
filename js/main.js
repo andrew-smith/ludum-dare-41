@@ -109,6 +109,7 @@ let imgBackgroundOverlay = new Image();
 let imgBullets = new Image();
 let imgBeatTiming = new Image();
 let imgEnemyBullets = new Image();
+let imgExplosion = new Image();
 
 const loadImages = () => {
 
@@ -135,6 +136,9 @@ const loadImages = () => {
 
     imgEnemyBullets.load("res/enemy-bullets.png");
     document.getElementById("imagestore").appendChild(imgEnemyBullets);
+
+    imgExplosion.load("res/explosion.png");
+    document.getElementById("imagestore").appendChild(imgExplosion);
 };
 
 
@@ -212,7 +216,8 @@ const gameloop = () => {
     LAST_UPDATE = now;
 
     if(!GAMEOVER) {
-        setTimeout(gameloop, 1);
+        window.requestAnimationFrame(gameloop);
+        // setTimeout(gameloop, 1);
     }
 
 };
@@ -264,6 +269,8 @@ function clamp(num, min, max) {
     return Math.floor(num <= min ? min : num >= max ? max : num);
 }
 
+const _DEBUG_SHOOT = true;
+
 const pressShoot = (keyCode) => {
     if(keyCode === KEY_SPACE && !needsReload) {
         // then player can fire
@@ -312,6 +319,11 @@ const pressShoot = (keyCode) => {
         }
 
         let shotResult = 'miss';
+
+        if(_DEBUG_SHOOT) {
+            closestDiff = 0;
+            peaksFired[closestPeak] = "perfect";
+        }
 
         // this means we fired
         if(peaksFired[closestPeak] && closestDiff < 0.3) {

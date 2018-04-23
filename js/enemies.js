@@ -1,5 +1,49 @@
 
 
+// square explosion image
+const IMG_EXP_SIZE = 42;
+
+const createExplosion = (x, y) => {
+
+    let exp = {
+        x: x,
+        y: y,
+        explosion: true,
+        timeAlive: 0,
+        draw: (delta) => {
+
+            g.save();
+
+            g.translate(exp.x, exp.y);
+
+            g.fillStyle = 'blue';
+            g.drawImage(imgExplosion,
+                0,
+                0,
+                IMG_EXP_SIZE,
+                IMG_EXP_SIZE,
+                -(IMG_EXP_SIZE/2),
+                -(IMG_EXP_SIZE/2),
+                IMG_EXP_SIZE,
+                IMG_EXP_SIZE
+            );
+
+            g.restore();
+        },
+        update: (delta) => {
+            exp.timeAlive += delta;
+
+            if(exp.timeAlive > 200) {
+                exp.x = -999; // move off screen and dispose
+                exp.y = -999;
+            }
+        }
+    };
+
+    emitShot(exp);
+};
+
+
 const createBasicEnemy = (x, y) => {
     let enemy = {x: x, y:y, type:'basic', health: 100};
 
@@ -23,6 +67,10 @@ const createBasicEnemy = (x, y) => {
 
     enemy.hit = (damage) => {
         enemy.health -= damage;
+
+        if(enemy.isDead()) {
+            createExplosion(enemy.x, enemy.y);
+        }
     };
 
     enemy.isDead = () => {
