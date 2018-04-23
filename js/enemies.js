@@ -20,9 +20,6 @@ const createExplosion = (x, y) => {
 
             let explosionIdx = Math.min(Math.floor(exp.timeAlive / IMG_EXP_FRAME_LENGTH), MAX_IMG_COUNT);
 
-            console.log("EXP" + explosionIdx);
-
-            g.fillStyle = 'blue';
             g.drawImage(imgExplosion,
                 explosionIdx * IMG_EXP_SIZE,
                 0,
@@ -187,6 +184,7 @@ const createScatterShotEnemy = (x, y) => {
 
     enemy.shootCounter = 0;
     enemy.lastDegrees = 0;
+    enemy.clockwiseShots = Math.random() > 0.5;
 
     enemy.update = (delta) => {
         enemy.y += delta * 0.1;
@@ -198,7 +196,12 @@ const createScatterShotEnemy = (x, y) => {
             let vector = new Victor(0,0.2);
             vector.rotateByDeg(enemy.lastDegrees);
 
-            enemy.lastDegrees += 30;
+            if(enemy.clockwiseShots) {
+                enemy.lastDegrees += 30;
+            }
+            else {
+                enemy.lastDegrees -= 30;
+            }
 
             let shot = createVectorShot({
                 x: enemy.x,
