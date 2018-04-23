@@ -67,10 +67,235 @@ var LEVEL1 = [
         type: TYPE_BASIC_SHOT,
         spawnLocation: [HARD_RIGHT]
     },
+    {
+        spawnTime: 33,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 33,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [MIDDLE]
+    },
+    {
+        spawnTime: 33,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 36,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 36,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [MIDDLE]
+    },
+    {
+        spawnTime: 36,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
 
 
 
 
+    // breakdown
+    {
+        spawnTime: 40,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 40.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [LEFT]
+    },
+    {
+        spawnTime: 41,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 41.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [LEFT]
+    },
+    {
+        spawnTime: 42,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 42.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [RIGHT]
+    },
+    {
+        spawnTime: 43,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 43.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [RIGHT]
+    },
+
+    {
+        spawnTime: 44,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 44.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [LEFT]
+    },
+    {
+        spawnTime: 45,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 45.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [LEFT]
+    },
+    {
+        spawnTime: 46,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 46.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [RIGHT]
+    },
+    {
+        spawnTime: 47,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 47.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [RIGHT]
+    },
+
+    {
+        spawnTime: 48,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 48.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [LEFT]
+    },
+    {
+        spawnTime: 49,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 49.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [LEFT]
+    },
+    {
+        spawnTime: 50,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 50.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [RIGHT]
+    },
+    {
+        spawnTime: 51,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 51.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [RIGHT]
+    },
+
+    {
+        spawnTime: 52,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 52.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [LEFT]
+    },
+    {
+        spawnTime: 53,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 53.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [LEFT]
+    },
+    {
+        spawnTime: 54,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 54.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [RIGHT]
+    },
+    {
+        spawnTime: 55,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 55.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [RIGHT]
+    },
+
+
+
+    // end breakdown
+
+
+    {
+        spawnTime: 56,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [MIDDLE]
+    },
+    {
+        spawnTime: 56.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [LEFT]
+    },
+    {
+        spawnTime: 56.5,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [RIGHT]
+    },
+    {
+        spawnTime: 57,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_LEFT]
+    },
+    {
+        spawnTime: 57,
+        type: TYPE_BASIC_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
 
 
 
