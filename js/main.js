@@ -48,6 +48,8 @@ $(() => {
     window.onkeyup = function(e) { keys[e.keyCode] = false; releaseShoot(e.keyCode); }
     window.onkeydown = function(e) { keys[e.keyCode] = true; pressShoot(e.keyCode); }
 
+    BOSS.x = CANVAS_WIDTH / 2;
+
     checkForEverythingLoaded();
 });
 
@@ -111,6 +113,7 @@ let imgBeatTiming = new Image();
 let imgEnemyBullets = new Image();
 let imgExplosion = new Image();
 let imgEnemyShip1 = new Image();
+let imgEnemyShips = new Image();
 
 const loadImages = () => {
 
@@ -143,6 +146,9 @@ const loadImages = () => {
 
     imgEnemyShip1.load("res/enemy_ship_1.png");
     document.getElementById("imagestore").appendChild(imgEnemyShip1);
+
+    imgEnemyShips.load("res/boss.png");
+    document.getElementById("imagestore").appendChild(imgEnemyShips);
 };
 
 
@@ -235,6 +241,7 @@ const gameloop = () => {
     playerActions(delta);
     enemyActions(delta);
     updateEnemyShots(delta);
+    BOSS.update(delta);
 
     g.save();
     g.imageSmoothingEnabled = false;
@@ -258,6 +265,8 @@ const render = (delta) => {
 
     // background picture
     renderBackground(delta);
+
+    BOSS.draw(delta);
 
     renderEnemies(delta);
 
@@ -500,7 +509,6 @@ const calculatePlayerShots = (delta) => {
     });
 
 
-
     PLAYER_SHOTS.forEach((shot) => {
 
         if(shot.type === 'bullet') {
@@ -512,6 +520,11 @@ const calculatePlayerShots = (delta) => {
                     shot.ttl = -1;
                 }
             });
+
+            if(shot.ttl > 0 && BOSS.contains(shot)) {
+                BOSS.hit(shot.damage);
+                shot.ttl = -1;
+            }
         }
         else if(shot.type === 'light') {
             shot.x = PLAYER_POSITION.x;
@@ -530,16 +543,19 @@ const calculatePlayerShots = (delta) => {
 
                 if(hit) {
                     enemy.hit(shot.damage * delta);
-                    console.log(enemy.health);
                 }
-
-
             });
+
+            if(BOSS.contains(shot)) {
+                BOSS.hit(shot.damage * delta);
+            }
 
         }
 
         shot.ttl -= delta;
     });
+
+
 };
 
 
@@ -571,9 +587,6 @@ const renderBackground = (delta) => {
 
     backgroundOffset += delta * 0.004;
     backgroundOverlayOffset += delta * 0.02;
-
-    g.fillStyle = 'blue';
-    g.fillRect(0,0,CANVAS_WIDTH, CANVAS_HEIGHT);
 
     let twinkleOffset = 0;
 
@@ -1035,4 +1048,25 @@ const checkInObject = (p,o) => {
     }
 
     return false;
+};
+
+
+// checks if one obj is in another
+// {x, y, width, height} // point is in centre
+const checkBoundsInBounds = (boundA, boundB) => {
+
+    let a = {
+        left: boundA.x - (boundA.width/2),
+        right: boundA.x + (boundA.width/2),
+        top: boundA.y - (boundA.height/2),
+        bottom: boundA.y + (boundA.height/2)
+    };
+    let b = {
+        left: boundB.x - (boundB.width/2),
+        right: boundB.x + (boundB.width/2),
+        top: boundB.y - (boundB.height/2),
+        bottom: boundB.y + (boundB.height/2)
+    };
+
+    return (a.left >= b.right || a.top >= b.bottom || a.right <= b.left || a.bottom <= b.top);
 };
