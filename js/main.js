@@ -495,19 +495,6 @@ const calculatePlayerShots = (delta) => {
         PLAYER_SHOTS.shift();
     }
 
-    // remove any shots that have been used or expired
-    // let shotsToRemove = [];
-    // let amountOfShotsRemoved = 0;
-    // for(var i=0; i<PLAYER_SHOTS.length; i++) {
-    //     if(PLAYER_SHOTS[i].ttl <= 0) {
-    //         shotsToRemove.push(i);
-    //     }
-    // }
-    // shotsToRemove.forEach((idx) => {
-    //     PLAYER_SHOTS.splice(idx - amountOfShotsRemoved);
-    //     amountOfShotsRemoved++;
-    // });
-
 
     PLAYER_SHOTS.forEach((shot) => {
 
@@ -525,11 +512,11 @@ const calculatePlayerShots = (delta) => {
                 }
             });
 
-            // if(shot.ttl > 0 && BOSS.contains(shot)) {
-            //     BOSS.hit(shot.damage);
-            //     shot.ttl = -1;
-            //     console.log("BOSS HIT");
-            // }
+            if(shot.ttl > 0 && BOSS.contains(shot.x, shot.y)) {
+                BOSS.hit(shot.damage);
+                shot.ttl = -1;
+                console.log("BOSS HIT");
+            }
         }
         else if(shot.type === 'light') {
             shot.x = PLAYER_POSITION.x;
@@ -551,9 +538,10 @@ const calculatePlayerShots = (delta) => {
                 }
             });
 
-            // if(BOSS.contains(shot)) {
-            //     BOSS.hit(shot.damage * delta);
-            // }
+            // lightning is all the way up the screen
+            if(BOSS.x >= PLAYER_POSITION.x && BOSS.x <= PLAYER_POSITION.x) {
+                BOSS.hit(shot.damage * delta);
+            }
 
         }
 
@@ -726,7 +714,7 @@ const renderPlayerShots = (delta) => {
         if(shot.ttl <= 0) {
             return;
         }
-        
+
         if(shot.type === 'bullet') {
             renderBullet(shot);
         }

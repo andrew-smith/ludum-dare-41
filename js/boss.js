@@ -32,60 +32,38 @@ const BOSS_BOUNDS_3 = {
     height: BOSS_HEIGHT / 6.4
 };
 
-BOSS.contains = (point) => {
+BOSS.contains = (x, y) => {
 
-    return checkInObject({
-        point
-    }, {
+    let point = {
+        x: x,
+        y: y
+    };
+
+    return checkInObject(
+        point,
+    {
         x: BOSS.x,
         y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height /2),
         width: BOSS_BOUNDS_1.width,
         height: BOSS_BOUNDS_1.height
     }) ||
-    checkInObject({
-        point
-    }, {
+    checkInObject(
+        point,
+    {
         x: BOSS.x,
         y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height) + (BOSS_BOUNDS_2.height /2),
         width: BOSS_BOUNDS_2.width,
         height: BOSS_BOUNDS_2.height
     }) ||
-    checkInObject({
-        point
-    }, {
+    checkInObject(
+        point,
+    {
         x: BOSS.x,
         y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height) + (BOSS_BOUNDS_2.height) + (BOSS_BOUNDS_3.height /2),
         width: BOSS_BOUNDS_3.width,
         height: BOSS_BOUNDS_3.height
     });
 
-};
-
-BOSS.containsBounds = (bounds) => {
-    return checkBoundsInBounds({
-        bounds
-    }, {
-        x: BOSS.x,
-        y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height /2),
-        width: BOSS_BOUNDS_1.width,
-        height: BOSS_BOUNDS_1.height
-    }) ||
-    checkBoundsInBounds({
-        bounds
-    }, {
-        x: BOSS.x,
-        y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height) + (BOSS_BOUNDS_2.height /2),
-        width: BOSS_BOUNDS_2.width,
-        height: BOSS_BOUNDS_2.height
-    }) ||
-    checkBoundsInBounds({
-        bounds
-    }, {
-        x: BOSS.x,
-        y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height) + (BOSS_BOUNDS_2.height) + (BOSS_BOUNDS_3.height /2),
-        width: BOSS_BOUNDS_3.width,
-        height: BOSS_BOUNDS_3.height
-    });
 };
 
 
@@ -116,24 +94,24 @@ BOSS.draw = (delta) => {
 
     g.translate(BOSS.x, BOSS.y);
 
-    g.fillStyle = 'red';
-    g.fillRect(
-        -(BOSS_BOUNDS_1.width/2),
-        -(BOSS_HEIGHT/2),
-        BOSS_BOUNDS_1.width,
-        BOSS_BOUNDS_1.height);
+    // g.fillStyle = 'red';
+    // g.fillRect(
+    //     -(BOSS_BOUNDS_1.width/2),
+    //     -(BOSS_HEIGHT/2),
+    //     BOSS_BOUNDS_1.width,
+    //     BOSS_BOUNDS_1.height);
 
-    g.fillRect(
-        -(BOSS_BOUNDS_2.width/2),
-        -(BOSS_HEIGHT/2) + BOSS_BOUNDS_1.height,
-        BOSS_BOUNDS_2.width,
-        BOSS_BOUNDS_2.height);
+    // g.fillRect(
+    //     -(BOSS_BOUNDS_2.width/2),
+    //     -(BOSS_HEIGHT/2) + BOSS_BOUNDS_1.height,
+    //     BOSS_BOUNDS_2.width,
+    //     BOSS_BOUNDS_2.height);
 
-    g.fillRect(
-        -(BOSS_BOUNDS_3.width/2),
-        -(BOSS_HEIGHT/2) + BOSS_BOUNDS_1.height + BOSS_BOUNDS_2.height,
-        BOSS_BOUNDS_3.width,
-        BOSS_BOUNDS_3.height);
+    // g.fillRect(
+    //     -(BOSS_BOUNDS_3.width/2),
+    //     -(BOSS_HEIGHT/2) + BOSS_BOUNDS_1.height + BOSS_BOUNDS_2.height,
+    //     BOSS_BOUNDS_3.width,
+    //     BOSS_BOUNDS_3.height);
 
     if(drawBossImage) {
         g.drawImage(imgEnemyShips,
