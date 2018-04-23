@@ -828,8 +828,8 @@ const renderTimeline = (delta) => {
 }
 
 
-const ENEMY_WIDTH = 30;
-const ENEMY_HEIGHT = 30;
+const ENEMY_WIDTH = 32;
+const ENEMY_HEIGHT = 32;
 
 // array of current live enemies
 const ENEMIES = [];

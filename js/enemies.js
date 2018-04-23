@@ -98,12 +98,15 @@ const createBasicEnemy = (x, y) => {
 
         g.translate(enemy.x, enemy.y);
 
-        g.fillStyle = 'red';
-        g.fillRect(
-            -(ENEMY_WIDTH /2),
-            -(ENEMY_HEIGHT /2),
+        g.drawImage(imgEnemyShip1,
+            0,
+            0,
             ENEMY_WIDTH,
-            ENEMY_HEIGHT
+            ENEMY_WIDTH,
+            -(ENEMY_WIDTH/2),
+            -(ENEMY_WIDTH/2),
+            ENEMY_WIDTH,
+            ENEMY_WIDTH
         );
 
         g.restore();
