@@ -11,41 +11,39 @@ const TYPE_BASIC = "enemy_basic",
 
 
 var LEVEL1 = [
+
+
+    // First beats come in
+    {
+        spawnTime: 13,
+        deposeTime: 20,
+        type: TYPE_BASIC,
+        spawnLocation: [MIDDLE]
+    },
+
+    // Testing guys
     {
         spawnTime: 1,
         deposeTime: 15,
-        type: TYPE_SCATTER_SHOT,
+        type: TYPE_BASIC,
         spawnLocation: [HARD_RIGHT]
     },
     {
         spawnTime: 1,
         deposeTime: 15,
-        type: TYPE_SCATTER_SHOT,
+        type: TYPE_BASIC,
         spawnLocation: [HARD_LEFT]
     },
-        {
-            spawnTime: 5,
-            deposeTime: 15,
-            type: TYPE_SCATTER_SHOT,
-            spawnLocation: [HARD_RIGHT]
-        },
-        {
-            spawnTime: 5,
-            deposeTime: 15,
-            type: TYPE_SCATTER_SHOT,
-            spawnLocation: [HARD_LEFT]
-        },
-
-            {
-                spawnTime: 10,
-                deposeTime: 15,
-                type: TYPE_SCATTER_SHOT,
-                spawnLocation: [HARD_RIGHT]
-            },
-            {
-                spawnTime: 10,
-                deposeTime: 15,
-                type: TYPE_SCATTER_SHOT,
-                spawnLocation: [HARD_LEFT]
-            }
+    {
+        spawnTime: 10,
+        deposeTime: 15,
+        type: TYPE_SCATTER_SHOT,
+        spawnLocation: [HARD_RIGHT]
+    },
+    {
+        spawnTime: 10,
+        deposeTime: 15,
+        type: TYPE_SCATTER_SHOT,
+        spawnLocation: [HARD_LEFT]
+    }
 ];
