@@ -226,8 +226,13 @@ const endGame = () => {
             });
         }
 
+        // allow them to restart the game after 2 seconds
+        setTimeout(() => { playerCanRestartGame = true;}, 2000);
+
     }
 };
+
+let playerCanRestartGame = false;
 
 const STATS = {
     enemiesKilled: 0,
@@ -488,6 +493,9 @@ const pressShoot = (keyCode) => {
 
 
         needsReload = true;
+    }
+    else if(playerCanRestartGame) {
+        location.reload();
     }
 };
 
