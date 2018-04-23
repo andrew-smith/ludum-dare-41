@@ -524,6 +524,7 @@ const calculatePlayerShots = (delta) => {
             if(shot.ttl > 0 && BOSS.contains(shot)) {
                 BOSS.hit(shot.damage);
                 shot.ttl = -1;
+                console.log("BOSS HIT");
             }
         }
         else if(shot.type === 'light') {

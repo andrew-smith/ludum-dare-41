@@ -22,28 +22,28 @@ var LEVEL1 = [
     },
 
     // Testing guys
-    {
-        spawnTime: 1,
-        deposeTime: 15,
-        type: TYPE_BASIC,
-        spawnLocation: [HARD_RIGHT]
-    },
-    {
-        spawnTime: 1,
-        deposeTime: 15,
-        type: TYPE_BASIC,
-        spawnLocation: [HARD_LEFT]
-    },
-    {
-        spawnTime: 10,
-        deposeTime: 15,
-        type: TYPE_SCATTER_SHOT,
-        spawnLocation: [HARD_RIGHT]
-    },
-    {
-        spawnTime: 10,
-        deposeTime: 15,
-        type: TYPE_SCATTER_SHOT,
-        spawnLocation: [HARD_LEFT]
-    }
+    // {
+    //     spawnTime: 1,
+    //     deposeTime: 15,
+    //     type: TYPE_BASIC,
+    //     spawnLocation: [HARD_RIGHT]
+    // },
+    // {
+    //     spawnTime: 1,
+    //     deposeTime: 15,
+    //     type: TYPE_BASIC,
+    //     spawnLocation: [HARD_LEFT]
+    // },
+    // {
+    //     spawnTime: 10,
+    //     deposeTime: 15,
+    //     type: TYPE_SCATTER_SHOT,
+    //     spawnLocation: [HARD_RIGHT]
+    // },
+    // {
+    //     spawnTime: 10,
+    //     deposeTime: 15,
+    //     type: TYPE_SCATTER_SHOT,
+    //     spawnLocation: [HARD_LEFT]
+    // }
 ];
