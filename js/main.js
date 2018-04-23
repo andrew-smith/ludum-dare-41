@@ -199,8 +199,19 @@ const STATS = {
     bulletScores: {}
 };
 
+const VERTICAL_TEXT_SPACING = 12;
+
 const displayStats = (delta) => {
 
+    g.save();
+    g.fillStyle = 'white';
+
+    g.translate(25, 50);
+    g.fillText("Shots Fired: " + STATS.bulletsShot, 0, 0);
+    g.translate(0, VERTICAL_TEXT_SPACING);
+    g.fillText("Enemies Killed: " + STATS.enemiesKilled, 0, 0);
+
+    g.restore();
 };
 
 
