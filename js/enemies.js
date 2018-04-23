@@ -2,6 +2,8 @@
 
 // square explosion image
 const IMG_EXP_SIZE = 42;
+const MAX_IMG_COUNT = 6;
+const IMG_EXP_FRAME_LENGTH = 50;
 
 const createExplosion = (x, y) => {
 
@@ -16,9 +18,13 @@ const createExplosion = (x, y) => {
 
             g.translate(exp.x, exp.y);
 
+            let explosionIdx = Math.min(Math.floor(exp.timeAlive / IMG_EXP_FRAME_LENGTH), MAX_IMG_COUNT);
+
+            console.log("EXP" + explosionIdx);
+
             g.fillStyle = 'blue';
             g.drawImage(imgExplosion,
-                0,
+                explosionIdx * IMG_EXP_SIZE,
                 0,
                 IMG_EXP_SIZE,
                 IMG_EXP_SIZE,
@@ -33,7 +39,7 @@ const createExplosion = (x, y) => {
         update: (delta) => {
             exp.timeAlive += delta;
 
-            if(exp.timeAlive > 200) {
+            if(exp.timeAlive > IMG_EXP_FRAME_LENGTH *  MAX_IMG_COUNT) {
                 exp.x = -999; // move off screen and dispose
                 exp.y = -999;
             }
