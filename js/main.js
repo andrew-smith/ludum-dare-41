@@ -50,8 +50,26 @@ $(() => {
 
     BOSS.x = CANVAS_WIDTH / 2;
 
+    showLoading();
+
     checkForEverythingLoaded();
 });
+
+const showLoading = () => {
+    g.save();
+
+    g.scale(CANVAS_SCALE, CANVAS_SCALE);
+
+    g.fillStyle = "black";
+    g.fillText("Loading...", 15 + Math.random() * CANVAS_WIDTH, 15 + Math.random() * CANVAS_HEIGHT);
+
+    g.restore();
+
+    if(!FINISHED_LOADING) {
+        setTimeout(showLoading, 250);
+    }
+}
+
 
 let backgroundMusic = null;
 let playerDeathSound = null;
@@ -152,6 +170,7 @@ const loadImages = () => {
 };
 
 
+let FINISHED_LOADING = false;
 
 const checkForEverythingLoaded = () => {
 
@@ -172,6 +191,7 @@ const checkForEverythingLoaded = () => {
     }
     else {
         console.log("READY TO START");
+        FINISHED_LOADING = true;
 
 
         backgroundMusic.play();
