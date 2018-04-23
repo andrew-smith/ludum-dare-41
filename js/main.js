@@ -60,8 +60,9 @@ const showLoading = () => {
 
     g.scale(CANVAS_SCALE, CANVAS_SCALE);
 
-    g.fillStyle = "black";
-    g.fillText("Loading...", 15 + Math.random() * CANVAS_WIDTH, 15 + Math.random() * CANVAS_HEIGHT);
+    g.fillStyle = "white";
+    g.font = 'bold 10px Courier New';
+    g.fillText("Loading...", Math.random() * CANVAS_WIDTH, Math.random() * CANVAS_HEIGHT);
 
     g.restore();
 
@@ -244,8 +245,7 @@ const displayStats = (delta) => {
 
 
     g.save();
-    g.fillStyle = 'white';
-
+    g.fillStyle = "white";
     g.font = 'bold 10px Courier New';
 
     g.translate(60, IMG_GAME_OVER_Y + IMG_GAME_OVER_HEIGHT/2 + VERTICAL_TEXT_SPACING);
