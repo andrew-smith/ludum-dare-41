@@ -193,6 +193,16 @@ const endGame = () => {
     }
 };
 
+const STATS = {
+    enemiesKilled: 0,
+    bulletsShot: 0,
+    bulletScores: {}
+};
+
+const displayStats = (delta) => {
+
+};
+
 
 const isGameOver = () => {
     return GAMEOVER;
@@ -245,6 +255,10 @@ const render = (delta) => {
     renderPlayer(delta);
 
     renderHud(delta);
+
+    if(isGameOver()) {
+        displayStats(delta);
+    }
 
     renderTimeline(delta);
 };
@@ -345,6 +359,11 @@ const pressShoot = (keyCode) => {
             console.log("Shots in a row: " + shotsInARow);
             console.log("Shot index    : " + currentShotIndex);
 
+            STATS.bulletsShot++;
+
+            
+
+
             shotResult = peaksFired[closestPeak];
 
             let shot = {
@@ -356,6 +375,16 @@ const pressShoot = (keyCode) => {
                 ttl: 3000,
                 maxttl: 3000
             };
+
+            if(!STATS.bulletScores[shotResult]) {
+                STATS.bulletScores[shotResult] = 0;
+            }
+
+            STATS.bulletScores[shotResult]++;
+
+            if(STATS.highestShotsInARow < shotsInARow) {
+                STATS.highestShotsInARow = shotsInARow;
+            }
 
             shot.level = clamp(currentShotIndex, 1, 3);
 
@@ -492,6 +521,8 @@ const calculatePlayerShots = (delta) => {
                     enemy.hit(shot.damage * delta);
                     console.log(enemy.health);
                 }
+
+
             });
 
         }
@@ -635,15 +666,6 @@ const renderPlayer = (delta) => {
     g.save();
 
     g.translate(PLAYER_POSITION.x,PLAYER_POSITION.y);
-
-    // g.fillRect(-PLAYER_WIDTH / 2,
-    //     -PLAYER_HEIGHT / 2,
-    //     PLAYER_WIDTH,
-    //     PLAYER_HEIGHT);
-
-    // ship flame
-
-
 
     g.drawImage(imgPlayerShip,
         0 + 40 * 5,

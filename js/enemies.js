@@ -68,11 +68,16 @@ const createBasicEnemy = (x, y) => {
         return contains;
     };
 
+    enemy.onDeath = () => {
+        STATS.enemiesKilled++;
+    };
+
     enemy.hit = (damage) => {
         enemy.health -= damage;
 
         if(enemy.isDead()) {
             createExplosion(enemy.x, enemy.y);
+            enemy.onDeath();
         }
     };
 
