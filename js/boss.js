@@ -9,7 +9,7 @@ const HEALTH_GAP = 8;
 const BOSS = {
     x: 0,
     y: -BOSS_HEIGHT,
-    health: 100000
+    health: 88000
 
 };
 

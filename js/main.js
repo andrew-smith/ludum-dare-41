@@ -307,7 +307,7 @@ function clamp(num, min, max) {
     return Math.floor(num <= min ? min : num >= max ? max : num);
 }
 
-const _DEBUG_SHOOT = true;
+const _DEBUG_SHOOT = false;
 
 const pressShoot = (keyCode) => {
     if(keyCode === KEY_SPACE && !needsReload && !isGameOver()) {
