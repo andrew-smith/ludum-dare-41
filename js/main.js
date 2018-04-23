@@ -191,9 +191,12 @@ const endGame = () => {
         }
 
     }
+};
 
 
-}
+const isGameOver = () => {
+    return GAMEOVER;
+};
 
 // how long since last frame
 let LAST_UPDATE = 0;
@@ -219,10 +222,7 @@ const gameloop = () => {
 
     LAST_UPDATE = now;
 
-    if(!GAMEOVER) {
-        window.requestAnimationFrame(gameloop);
-        // setTimeout(gameloop, 1);
-    }
+    window.requestAnimationFrame(gameloop);
 
 };
 
@@ -276,7 +276,7 @@ function clamp(num, min, max) {
 const _DEBUG_SHOOT = true;
 
 const pressShoot = (keyCode) => {
-    if(keyCode === KEY_SPACE && !needsReload) {
+    if(keyCode === KEY_SPACE && !needsReload && !isGameOver()) {
         // then player can fire
 
         // work out how many points
@@ -404,31 +404,33 @@ const playerActions = (delta) => {
 
     let movement = 0.15 * delta;
 
-    if(keys[KEY_W] || keys[KEY_UP]) {
-        PLAYER_POSITION.y -= movement;
-    }
-    if(keys[KEY_S] || keys[KEY_DOWN]) {
-        PLAYER_POSITION.y += movement;
-    }
-    if(keys[KEY_A] || keys[KEY_LEFT]) {
-        PLAYER_POSITION.x -= movement;
-    }
-    if(keys[KEY_D] || keys[KEY_RIGHT]) {
-        PLAYER_POSITION.x += movement;
-    }
+    if(!isGameOver()) {
+        if(keys[KEY_W] || keys[KEY_UP]) {
+            PLAYER_POSITION.y -= movement;
+        }
+        if(keys[KEY_S] || keys[KEY_DOWN]) {
+            PLAYER_POSITION.y += movement;
+        }
+        if(keys[KEY_A] || keys[KEY_LEFT]) {
+            PLAYER_POSITION.x -= movement;
+        }
+        if(keys[KEY_D] || keys[KEY_RIGHT]) {
+            PLAYER_POSITION.x += movement;
+        }
 
-    // check bounds
-    if(PLAYER_POSITION.y > CANVAS_HEIGHT) {
-        PLAYER_POSITION.y = CANVAS_HEIGHT;
-    }
-    if(PLAYER_POSITION.y < 0 + PLAYER_HEIGHT) {
-        PLAYER_POSITION.y = 0 + PLAYER_HEIGHT;
-    }
-    if(PLAYER_POSITION.x > CANVAS_WIDTH) {
-        PLAYER_POSITION.x = CANVAS_WIDTH;
-    }
-    if(PLAYER_POSITION.x < 0) {
-        PLAYER_POSITION.x = 0;
+        // check bounds
+        if(PLAYER_POSITION.y > CANVAS_HEIGHT) {
+            PLAYER_POSITION.y = CANVAS_HEIGHT;
+        }
+        if(PLAYER_POSITION.y < 0 + PLAYER_HEIGHT) {
+            PLAYER_POSITION.y = 0 + PLAYER_HEIGHT;
+        }
+        if(PLAYER_POSITION.x > CANVAS_WIDTH) {
+            PLAYER_POSITION.x = CANVAS_WIDTH;
+        }
+        if(PLAYER_POSITION.x < 0) {
+            PLAYER_POSITION.x = 0;
+        }
     }
 
     calculatePlayerShots(delta);
@@ -625,6 +627,10 @@ const renderPlayer = (delta) => {
 
 
     renderPlayerShots(delta);
+
+    if(isGameOver()) {
+        return;
+    }
 
     g.save();
 
@@ -839,6 +845,10 @@ let SPAWN_WIDTH_PART = CANVAS_WIDTH / 6;
 
 const spawnEnemy = (def) => {
 
+    if(isGameOver()) {
+        return;
+    }
+
     if(!ENEMY_SPAWN_MAP[def._id]) { // fix for accidental double spawns
         let startingLoc = def.spawnLocation[Math.floor(Math.random() * def.spawnLocation.length)]
 
@@ -911,9 +921,10 @@ const updateEnemyShots = (delta) => {
 
         shot.update(delta);
 
-        if(checkInObject(shot, playerBounds)) {
+        if(!isGameOver() && checkInObject(shot, playerBounds)) {
 
             PLAYER_DEAD = true;
+            createExplosion(PLAYER_POSITION.x, PLAYER_POSITION.y);
             endGame();
             console.log("Player Hit!");
         }
