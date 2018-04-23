@@ -110,6 +110,7 @@ let imgBullets = new Image();
 let imgBeatTiming = new Image();
 let imgEnemyBullets = new Image();
 let imgExplosion = new Image();
+let imgEnemyShip1 = new Image();
 
 const loadImages = () => {
 
@@ -139,6 +140,9 @@ const loadImages = () => {
 
     imgExplosion.load("res/explosion.png");
     document.getElementById("imagestore").appendChild(imgExplosion);
+
+    imgEnemyShip1.load("res/enemy_ship_1.png");
+    document.getElementById("imagestore").appendChild(imgEnemyShip1);
 };
 
 
@@ -830,18 +834,6 @@ const ENEMY_HEIGHT = 30;
 // array of current live enemies
 const ENEMIES = [];
 
-const spawnRandomEnemy = () => {
-
-    if(ENEMIES.length < 8) {
-        let randomStartX = Math.random() * CANVAS_WIDTH;
-        randomStartX = clamp(randomStartX, 0 + ENEMY_WIDTH, CANVAS_WIDTH - ENEMY_WIDTH);
-        let enemy = createEnemy(randomStartX, -ENEMY_HEIGHT);
-
-        ENEMIES.push(enemy);
-
-        console.log("Created enemy")
-    }
-};
 
 let SPAWN_WIDTH_PART = CANVAS_WIDTH / 6;
 
