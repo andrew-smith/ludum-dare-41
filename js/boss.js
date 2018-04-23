@@ -35,7 +35,7 @@ const BOSS_BOUNDS_3 = {
 BOSS.contains = (point) => {
 
     return checkInObject({
-        x: point.x, y: point.y
+        point
     }, {
         x: BOSS.x,
         y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height /2),
@@ -43,7 +43,7 @@ BOSS.contains = (point) => {
         height: BOSS_BOUNDS_1.height
     }) ||
     checkInObject({
-        x: point.x, y: point.y
+        point
     }, {
         x: BOSS.x,
         y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height) + (BOSS_BOUNDS_2.height /2),
@@ -51,7 +51,7 @@ BOSS.contains = (point) => {
         height: BOSS_BOUNDS_2.height
     }) ||
     checkInObject({
-        x: point.x, y: point.y
+        point
     }, {
         x: BOSS.x,
         y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height) + (BOSS_BOUNDS_2.height) + (BOSS_BOUNDS_3.height /2),
@@ -62,7 +62,30 @@ BOSS.contains = (point) => {
 };
 
 BOSS.containsBounds = (bounds) => {
-    return false;
+    return checkBoundsInBounds({
+        bounds
+    }, {
+        x: BOSS.x,
+        y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height /2),
+        width: BOSS_BOUNDS_1.width,
+        height: BOSS_BOUNDS_1.height
+    }) ||
+    checkBoundsInBounds({
+        bounds
+    }, {
+        x: BOSS.x,
+        y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height) + (BOSS_BOUNDS_2.height /2),
+        width: BOSS_BOUNDS_2.width,
+        height: BOSS_BOUNDS_2.height
+    }) ||
+    checkBoundsInBounds({
+        bounds
+    }, {
+        x: BOSS.x,
+        y: BOSS.y -(BOSS_HEIGHT/2) + (BOSS_BOUNDS_1.height) + (BOSS_BOUNDS_2.height) + (BOSS_BOUNDS_3.height /2),
+        width: BOSS_BOUNDS_3.width,
+        height: BOSS_BOUNDS_3.height
+    });
 };
 
 

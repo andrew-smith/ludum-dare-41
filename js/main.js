@@ -496,20 +496,24 @@ const calculatePlayerShots = (delta) => {
     }
 
     // remove any shots that have been used or expired
-    let shotsToRemove = [];
-    let amountOfShotsRemoved = 0;
-    for(var i=0; i<PLAYER_SHOTS.length; i++) {
-        if(PLAYER_SHOTS[i].ttl <= 0) {
-            shotsToRemove.push(i);
-        }
-    }
-    shotsToRemove.forEach((idx) => {
-        PLAYER_SHOTS.splice(idx - amountOfShotsRemoved);
-        amountOfShotsRemoved++;
-    });
+    // let shotsToRemove = [];
+    // let amountOfShotsRemoved = 0;
+    // for(var i=0; i<PLAYER_SHOTS.length; i++) {
+    //     if(PLAYER_SHOTS[i].ttl <= 0) {
+    //         shotsToRemove.push(i);
+    //     }
+    // }
+    // shotsToRemove.forEach((idx) => {
+    //     PLAYER_SHOTS.splice(idx - amountOfShotsRemoved);
+    //     amountOfShotsRemoved++;
+    // });
 
 
     PLAYER_SHOTS.forEach((shot) => {
+
+        if(shot.ttl <= 0) {
+            return;
+        }
 
         if(shot.type === 'bullet') {
             shot.y -= movement;
@@ -521,11 +525,11 @@ const calculatePlayerShots = (delta) => {
                 }
             });
 
-            if(shot.ttl > 0 && BOSS.contains(shot)) {
-                BOSS.hit(shot.damage);
-                shot.ttl = -1;
-                console.log("BOSS HIT");
-            }
+            // if(shot.ttl > 0 && BOSS.contains(shot)) {
+            //     BOSS.hit(shot.damage);
+            //     shot.ttl = -1;
+            //     console.log("BOSS HIT");
+            // }
         }
         else if(shot.type === 'light') {
             shot.x = PLAYER_POSITION.x;
@@ -547,9 +551,9 @@ const calculatePlayerShots = (delta) => {
                 }
             });
 
-            if(BOSS.contains(shot)) {
-                BOSS.hit(shot.damage * delta);
-            }
+            // if(BOSS.contains(shot)) {
+            //     BOSS.hit(shot.damage * delta);
+            // }
 
         }
 
@@ -718,6 +722,11 @@ const renderPlayer = (delta) => {
 const renderPlayerShots = (delta) => {
 
     PLAYER_SHOTS.forEach((shot) => {
+
+        if(shot.ttl <= 0) {
+            return;
+        }
+        
         if(shot.type === 'bullet') {
             renderBullet(shot);
         }

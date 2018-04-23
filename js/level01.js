@@ -20,6 +20,18 @@ var LEVEL1 = [
         type: TYPE_BASIC,
         spawnLocation: [MIDDLE]
     },
+    {
+        spawnTime: 14,
+        deposeTime: 20,
+        type: TYPE_BASIC,
+        spawnLocation: [MIDDLE]
+    },
+    {
+        spawnTime: 15,
+        deposeTime: 20,
+        type: TYPE_BASIC,
+        spawnLocation: [MIDDLE]
+    },
 
     // Testing guys
     // {
