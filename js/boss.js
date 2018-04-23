@@ -3,13 +3,16 @@
 const BOSS_WIDTH = 136;
 const BOSS_HEIGHT = 90;
 
+const STAGE_REVEAL = "reveal";
+
 const HEALTH_HEIGHT = 5;
 const HEALTH_GAP = 8;
 
 const BOSS = {
     x: 0,
     y: -BOSS_HEIGHT,
-    health: 88000
+    health: 88000,
+    stage: STAGE_REVEAL
 
 };
 
@@ -82,6 +85,8 @@ BOSS.isDead = () => {
 
 BOSS.update = (delta) => {
     BOSS.revealStage(delta);
+    BOSS.fightStage(delta);
+    BOSS.flyAwayStage(delta);
 };
 
 let drawBossImage = true;
@@ -146,19 +151,29 @@ BOSS.draw = (delta) => {
 
 
 let revealStageOver = false;
+
 BOSS.revealStage = (delta) => {
 
-    if(revealStageOver) {
+    if(BOSS.stage !== STAGE_REVEAL) {
         return;
     }
 
     BOSS.y += delta * 0.05;
 
     if(BOSS.y > BOSS_HEIGHT / 2 + 10) {
-        revealStageOver = true;
+        BOSS.stage = STAGE_FIGHT;
     }
 }
 
+
+const STAGE_FIGHT = "fight";
+
+BOSS.fightStage = (delta) => {
+
+    if(BOSS.stage !== STAGE_FIGHT) {
+        return;
+    }
+};
 
 let deathAnimationStarted = false;
 BOSS.deathAnimation = () => {
@@ -185,3 +200,18 @@ const deathExplosion = () => {
         (BOSS.y - BOSS_HEIGHT/2) + (Math.random() * BOSS_HEIGHT));
     
 }
+
+
+const STAGE_FLY_AWAY = "fly away!";
+
+const randomFlyAwayDirection = ((Math.random() *2) -1)/20
+
+BOSS.flyAwayStage = (delta) => {
+    if(BOSS.stage !== STAGE_FLY_AWAY) {
+        return;
+    }
+
+    BOSS.x += randomFlyAwayDirection * delta;
+    BOSS.y -= 0.1 * delta;
+
+};

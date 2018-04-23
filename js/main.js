@@ -132,6 +132,7 @@ let imgEnemyBullets = new Image();
 let imgExplosion = new Image();
 let imgEnemyShip1 = new Image();
 let imgEnemyShips = new Image();
+let imgGameOver = new Image();
 
 const loadImages = () => {
 
@@ -167,6 +168,9 @@ const loadImages = () => {
 
     imgEnemyShips.load("res/boss.png");
     document.getElementById("imagestore").appendChild(imgEnemyShips);
+
+    imgGameOver.load("res/game-over.png");
+    document.getElementById("imagestore").appendChild(imgGameOver);
 };
 
 
@@ -210,6 +214,7 @@ const endGame = () => {
         backgroundMusic.stop();
 
         if(PLAYER_DEAD) {
+            BOSS.stage = STAGE_FLY_AWAY;
             playerDeathSound.play();
             playerDeathSound.onended(() => {
                 sadTromboneSound.play();
@@ -229,13 +234,33 @@ const VERTICAL_TEXT_SPACING = 12;
 
 const displayStats = (delta) => {
 
+
+    let totalHitPercent = STATS.bulletsShot / PEAKS.length;
+
+    let score = STATS.bulletsShot;
+    score += STATS.enemiesKilled * 50;
+
+    score = (score * totalHitPercent) * 100;
+
+
     g.save();
     g.fillStyle = 'white';
 
-    g.translate(25, 50);
-    g.fillText("Shots Fired: " + STATS.bulletsShot, 0, 0);
+    g.font = 'bold 10px Courier New';
+
+    g.translate(60, IMG_GAME_OVER_Y + IMG_GAME_OVER_HEIGHT/2 + VERTICAL_TEXT_SPACING);
+    g.fillText("   Shots Fired: " + STATS.bulletsShot, 0, 0);
     g.translate(0, VERTICAL_TEXT_SPACING);
     g.fillText("Enemies Killed: " + STATS.enemiesKilled, 0, 0);
+
+
+    g.translate(0, VERTICAL_TEXT_SPACING);
+    g.fillText("      Bars Hit: " + STATS.bulletsShot + "/" + PEAKS.length + 
+        " (" + Math.floor(totalHitPercent*100) + "%)", 0, 0);
+
+
+    g.translate(0, VERTICAL_TEXT_SPACING);
+    g.fillText("         SCORE: " + Math.floor(score), 0, 0);
 
     g.restore();
 };
@@ -627,6 +652,12 @@ const MAX_SHOT_TEXT_TTL = 500;
 
 const IMG_BEAT_WIDTH = 65;
 const IMG_BEAT_HEIGHT = 32;
+
+const IMG_GAME_OVER_HEIGHT = 112;
+const IMG_GAME_OVER_WIDTH = 141;
+
+const IMG_GAME_OVER_Y = CANVAS_HEIGHT/4;
+
 const renderHud = (delta) => {
 
     shotTextTtl -= delta;
@@ -687,6 +718,22 @@ const renderHud = (delta) => {
         IMG_BEAT_HEIGHT
     );
     g.restore();
+
+
+    if(isGameOver() && PLAYER_DEAD) {
+
+        g.save();
+        g.translate(CANVAS_WIDTH/2, IMG_GAME_OVER_Y);
+
+        g.drawImage(imgGameOver,
+            -IMG_GAME_OVER_WIDTH/2,
+            -IMG_GAME_OVER_HEIGHT/2,
+            IMG_GAME_OVER_WIDTH,
+            IMG_GAME_OVER_HEIGHT
+        );
+
+        g.restore();
+    }
 
 };
 
