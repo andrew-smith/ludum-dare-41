@@ -134,6 +134,7 @@ let imgExplosion = new Image();
 let imgEnemyShip1 = new Image();
 let imgEnemyShips = new Image();
 let imgGameOver = new Image();
+let imgPlayAgain = new Image();
 
 const loadImages = () => {
 
@@ -172,6 +173,9 @@ const loadImages = () => {
 
     imgGameOver.load("res/game-over.png");
     document.getElementById("imagestore").appendChild(imgGameOver);
+
+    imgPlayAgain.load("res/retry.png");
+    document.getElementById("imagestore").appendChild(imgPlayAgain);
 };
 
 
@@ -656,11 +660,17 @@ const IMG_BEAT_HEIGHT = 32;
 const IMG_GAME_OVER_HEIGHT = 112;
 const IMG_GAME_OVER_WIDTH = 141;
 
+const IMG_PLAYAGAIN_WIDTH = 225;
+const IMG_PLAYAGAIN_HEIGHT = 56;
+
 const IMG_GAME_OVER_Y = CANVAS_HEIGHT/4;
+
+let scaleDelta = 0;
 
 const renderHud = (delta) => {
 
     shotTextTtl -= delta;
+    scaleDelta += delta * 0.001;
 
     if(shotTextTtl < 0) {
         shotTextTtl = 0;
@@ -723,13 +733,29 @@ const renderHud = (delta) => {
     if(isGameOver() && PLAYER_DEAD) {
 
         g.save();
+        // game over
         g.translate(CANVAS_WIDTH/2, IMG_GAME_OVER_Y);
+
 
         g.drawImage(imgGameOver,
             -IMG_GAME_OVER_WIDTH/2,
             -IMG_GAME_OVER_HEIGHT/2,
             IMG_GAME_OVER_WIDTH,
             IMG_GAME_OVER_HEIGHT
+        );
+
+        g.restore();
+
+        g.save();
+        // play again?
+        g.translate(CANVAS_WIDTH/2, CANVAS_HEIGHT*0.75);
+
+        g.scale(Math.abs(Math.sin(scaleDelta)/10) +0.8, Math.abs(Math.sin(scaleDelta)/10) +0.8);
+        g.drawImage(imgPlayAgain,
+            -IMG_PLAYAGAIN_WIDTH/2,
+            -IMG_PLAYAGAIN_HEIGHT/2,
+            IMG_PLAYAGAIN_WIDTH,
+            IMG_PLAYAGAIN_HEIGHT
         );
 
         g.restore();
