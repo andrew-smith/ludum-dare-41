@@ -96,10 +96,13 @@ let drawBossImage = true;
 BOSS.draw = (delta) => {
 
 
+    BOSS.drawPlayerLoseStage(delta);
+
     g.save();
 
 
     g.translate(BOSS.x, BOSS.y);
+
 
     // g.fillStyle = 'red';
     // g.fillRect(
@@ -224,29 +227,87 @@ BOSS.flyAwayStage = (delta) => {
 
 const STAGE_PLAYER_LOSE = "time to die now";
 let playerLoseDelta = 0;
-let playerLoseTimeToFire = 150;
+let showLightning = false;
 BOSS.playerLoseStage = (delta) => {
     if(BOSS.stage !== STAGE_PLAYER_LOSE) {
         return;
     }
 
-    playerLoseDelta += delta;
+    showLightning = true;
 
-    if(playerLoseDelta > playerLoseTimeToFire) {
-        playerLoseDelta = 0;
+    // playerLoseDelta += delta;
 
-        playerLoseTimeToFire = Math.max(playerLoseTimeToFire-1, 0);
+    // if(playerLoseDelta > playerLoseTimeToFire) {
+    //     playerLoseDelta = 0;
 
-
-
-        // fire towards player
-        let startPos = new Victor(BOSS.x, BOSS.y);
-        let playerPos = new Victor(PLAYER_POSITION.x, PLAYER_POSITION.y);
-
-        let vec = new Victor(playerPos.distanceX(startPos),playerPos.distanceY(startPos)).norm();
-        vec = vec.divide(new Victor(1.5, 1.5));
+    //     playerLoseTimeToFire = Math.max(playerLoseTimeToFire-1, 0);
 
 
-        emitShot(createVectorShot(startPos, vec));
+
+        // // fire towards player
+        // let startPos = new Victor(BOSS.x, BOSS.y);
+        // let playerPos = new Victor(PLAYER_POSITION.x, PLAYER_POSITION.y);
+
+        // let vec = new Victor(playerPos.distanceX(startPos),playerPos.distanceY(startPos)).norm();
+        // vec = vec.divide(new Victor(1.5, 1.5));
+
+
+        // emitShot(createVectorShot(startPos, vec));
+    // }
+};
+
+
+let bossLightningDelta = 0;
+let timeForPlayerToDieDelta = 0;
+
+BOSS.drawPlayerLoseStage = (delta) => {
+    if(BOSS.stage !== STAGE_PLAYER_LOSE) {
+        return;
     }
+
+    bossLightningDelta += delta;
+    timeForPlayerToDieDelta += delta;
+
+    if(bossLightningDelta < 200) {
+        return;
+    }
+    if(bossLightningDelta > 400) {
+        bossLightningDelta = 0;
+    }
+
+    if(timeForPlayerToDieDelta > 1000) {
+        PLAYER_DEAD = true;
+        createExplosion(PLAYER_POSITION.x, PLAYER_POSITION.y);
+        endGame();
+    }
+
+    // calculate angle towards player
+    let startPos = new Victor(BOSS.x, BOSS.y);
+    let playerPos = new Victor(PLAYER_POSITION.x, PLAYER_POSITION.y);
+    let vec = new Victor(playerPos.distanceX(startPos),playerPos.distanceY(startPos)).norm()
+
+    let angle = vec.angle();
+
+    g.save();
+
+    g.translate(BOSS.x, BOSS.y);
+    g.rotate(angle + (Math.PI /2), 0);
+
+
+    if(Math.random() > 0.5) {
+        g.scale(-1, 1);
+    }
+
+    g.drawImage(imgLightning,
+    0,
+    0,
+    IMG_LIGHT_WIDTH,
+    IMG_LIGHT_HEIGHT,
+    -(IMG_LIGHT_WIDTH / 2),
+    -IMG_LIGHT_HEIGHT,
+    IMG_LIGHT_WIDTH,
+    IMG_LIGHT_HEIGHT);
+
+    g.restore();
+
 };
