@@ -261,7 +261,7 @@ let bossLightningDelta = 0;
 let timeForPlayerToDieDelta = 0;
 
 BOSS.drawPlayerLoseStage = (delta) => {
-    if(BOSS.stage !== STAGE_PLAYER_LOSE) {
+    if(BOSS.stage !== STAGE_PLAYER_LOSE || BOSS.isDead()) {
         return;
     }
 
