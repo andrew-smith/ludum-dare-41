@@ -135,6 +135,7 @@ let imgEnemyShip1 = new Image();
 let imgEnemyShips = new Image();
 let imgGameOver = new Image();
 let imgPlayAgain = new Image();
+let imgWin = new Image();
 
 const loadImages = () => {
 
@@ -176,6 +177,9 @@ const loadImages = () => {
 
     imgPlayAgain.load("res/retry.png");
     document.getElementById("imagestore").appendChild(imgPlayAgain);
+
+    imgWin.load("res/win.png");
+    document.getElementById("imagestore").appendChild(imgWin);
 };
 
 
@@ -215,6 +219,7 @@ const checkForEverythingLoaded = () => {
 
 let GAMEOVER = false;
 let PLAYER_DEAD = false;
+let PLAYER_WIN = false;
 
 const endGame = () => {
     if(!GAMEOVER) {
@@ -232,6 +237,18 @@ const endGame = () => {
 
         // allow them to restart the game after 2 seconds
         setTimeout(() => { playerCanRestartGame = true;}, 2000);
+
+        // clear everything
+        while(ENEMY_SHOTS.length > 0) {
+            ENEMY_SHOTS.pop();
+        }
+
+        // explode all enemires
+        ENEMIES.forEach((enemy) => {
+
+            enemy.hit(enemy.health + 100);
+        });
+
 
     }
 };
@@ -678,6 +695,9 @@ const IMG_GAME_OVER_WIDTH = 141;
 const IMG_PLAYAGAIN_WIDTH = 225;
 const IMG_PLAYAGAIN_HEIGHT = 56;
 
+const IMG_WIN_WIDTH = 142;
+const IMG_WIN_HEIGHT = 48;
+
 const IMG_GAME_OVER_Y = CANVAS_HEIGHT/4;
 
 let scaleDelta = 0;
@@ -745,21 +765,7 @@ const renderHud = (delta) => {
     g.restore();
 
 
-    if(isGameOver() && PLAYER_DEAD) {
-
-        g.save();
-        // game over
-        g.translate(CANVAS_WIDTH/2, IMG_GAME_OVER_Y);
-
-
-        g.drawImage(imgGameOver,
-            -IMG_GAME_OVER_WIDTH/2,
-            -IMG_GAME_OVER_HEIGHT/2,
-            IMG_GAME_OVER_WIDTH,
-            IMG_GAME_OVER_HEIGHT
-        );
-
-        g.restore();
+    if(isGameOver()) {
 
         g.save();
         // play again?
@@ -774,6 +780,36 @@ const renderHud = (delta) => {
         );
 
         g.restore();
+
+        if(PLAYER_DEAD) {
+            g.save();
+            // game over
+            g.translate(CANVAS_WIDTH/2, IMG_GAME_OVER_Y);
+
+
+            g.drawImage(imgGameOver,
+                -IMG_GAME_OVER_WIDTH/2,
+                -IMG_GAME_OVER_HEIGHT/2,
+                IMG_GAME_OVER_WIDTH,
+                IMG_GAME_OVER_HEIGHT
+            );
+
+            g.restore();
+        }
+        else if(PLAYER_WIN) {
+            g.save();
+
+            g.translate(CANVAS_WIDTH/2, IMG_GAME_OVER_Y);
+
+            g.drawImage(imgWin,
+                -IMG_WIN_WIDTH/2,
+                -IMG_WIN_HEIGHT/2,
+                IMG_WIN_WIDTH,
+                IMG_WIN_HEIGHT
+            );
+
+            g.restore();
+        }
     }
 
 };

@@ -77,6 +77,9 @@ BOSS.hit = (dmg) => {
         BOSS.health = 0;
         BOSS.deathAnimation();
         STATS.bossDefeated = 100000;
+
+        PLAYER_WIN = true;
+        endGame();
     }
 };
 
