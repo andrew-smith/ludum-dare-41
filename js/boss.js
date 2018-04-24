@@ -11,7 +11,7 @@ const HEALTH_GAP = 8;
 const BOSS = {
     x: 0,
     y: -BOSS_HEIGHT,
-    health: 88000,
+    health: 80000,
     stage: STAGE_REVEAL
 
 };
@@ -76,6 +76,7 @@ BOSS.hit = (dmg) => {
     if(BOSS.health < 0) {
         BOSS.health = 0;
         BOSS.deathAnimation();
+        STATS.bossDefeated = 100000;
     }
 };
 
@@ -87,6 +88,7 @@ BOSS.update = (delta) => {
     BOSS.revealStage(delta);
     BOSS.fightStage(delta);
     BOSS.flyAwayStage(delta);
+    BOSS.playerLoseStage(delta);
 };
 
 let drawBossImage = true;
@@ -168,11 +170,14 @@ BOSS.revealStage = (delta) => {
 
 const STAGE_FIGHT = "fight";
 
-BOSS.fightStage = (delta) => {
+let fightShotDelta = 0;
 
+BOSS.fightStage = (delta) => {
     if(BOSS.stage !== STAGE_FIGHT) {
         return;
     }
+
+    fightShotDelta += delta;
 };
 
 let deathAnimationStarted = false;
@@ -214,4 +219,34 @@ BOSS.flyAwayStage = (delta) => {
     BOSS.x += randomFlyAwayDirection * delta;
     BOSS.y -= 0.1 * delta;
 
+};
+
+
+const STAGE_PLAYER_LOSE = "time to die now";
+let playerLoseDelta = 0;
+let playerLoseTimeToFire = 150;
+BOSS.playerLoseStage = (delta) => {
+    if(BOSS.stage !== STAGE_PLAYER_LOSE) {
+        return;
+    }
+
+    playerLoseDelta += delta;
+
+    if(playerLoseDelta > playerLoseTimeToFire) {
+        playerLoseDelta = 0;
+
+        playerLoseTimeToFire = Math.max(playerLoseTimeToFire-1, 0);
+
+
+
+        // fire towards player
+        let startPos = new Victor(BOSS.x, BOSS.y);
+        let playerPos = new Victor(PLAYER_POSITION.x, PLAYER_POSITION.y);
+
+        let vec = new Victor(playerPos.distanceX(startPos),playerPos.distanceY(startPos)).norm();
+        vec = vec.divide(new Victor(1.5, 1.5));
+
+
+        emitShot(createVectorShot(startPos, vec));
+    }
 };

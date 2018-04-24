@@ -204,6 +204,10 @@ const checkForEverythingLoaded = () => {
 
 
         backgroundMusic.play();
+
+        backgroundMusic.onended(() => {
+            BOSS.stage = STAGE_PLAYER_LOSE;
+        });
         gameloop();
     }
 };
@@ -237,7 +241,8 @@ let playerCanRestartGame = false;
 const STATS = {
     enemiesKilled: 0,
     bulletsShot: 0,
-    bulletScores: {}
+    bulletScores: {},
+    bossDefeated: 0
 };
 
 const VERTICAL_TEXT_SPACING = 12;
@@ -249,6 +254,8 @@ const displayStats = (delta) => {
 
     let score = STATS.bulletsShot;
     score += STATS.enemiesKilled * 50;
+
+    score += STATS.bossDefeated;
 
     score = (score * totalHitPercent) * 100;
 
