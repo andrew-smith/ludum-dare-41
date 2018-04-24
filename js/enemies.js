@@ -226,3 +226,35 @@ const createScatterShotEnemy = (x, y) => {
 
     return enemy;
 };
+
+
+const createTargetPlayerEnemy = (x, y) => {
+
+    let enemy = createBasicEnemy(x, y);
+
+
+    enemy.shootCounter = 0;
+
+    enemy.update = (delta) => {
+        enemy.y += delta * 0.1;
+
+        enemy.shootCounter += delta;
+
+        if(enemy.shootCounter > 1000) {
+
+            // fire towards player
+            let startPos = new Victor(enemy.x, enemy.y);
+            let playerPos = new Victor(PLAYER_POSITION.x, PLAYER_POSITION.y);
+
+            let vec = new Victor(playerPos.distanceX(startPos),playerPos.distanceY(startPos)).norm();
+            vec = vec.divide(new Victor(5, 5));
+
+            emitShot(createVectorShot(startPos, vec));
+
+            enemy.shootCounter = 0;
+        }
+
+    };
+
+    return enemy;
+};

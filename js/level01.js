@@ -7,11 +7,11 @@ const HARD_RIGHT = "hard_right",
 
 const TYPE_BASIC = "enemy_basic",
       TYPE_BASIC_SHOT = "enemy_basic_shoot",
-      TYPE_SCATTER_SHOT = "enemy_scatter_shot";
+      TYPE_SCATTER_SHOT = "enemy_scatter_shot",
+      TYPE_TARGET_PLAYER = "enemy_target_player";
 
 
 var LEVEL1 = [
-
 
     // First beats come in
     {
@@ -387,13 +387,13 @@ var LEVEL1 = [
 
     {
         spawnTime: 105,
-        type: TYPE_SCATTER_SHOT,
-        spawnLocation: [HARD_RIGHT]
+        type: TYPE_TARGET_PLAYER,
+        spawnLocation: [HARD_LEFT]
     },
     {
         spawnTime: 106,
-        type: TYPE_SCATTER_SHOT,
-        spawnLocation: [HARD_LEFT]
+        type: TYPE_TARGET_PLAYER,
+        spawnLocation: [HARD_RIGHT]
     },
 
 ];

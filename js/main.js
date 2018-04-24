@@ -1060,6 +1060,9 @@ const spawnEnemy = (def) => {
         else if(def.type === TYPE_SCATTER_SHOT) {
             ENEMIES.push(createScatterShotEnemy(startX, -ENEMY_HEIGHT));
         }
+        else if(def.type === TYPE_TARGET_PLAYER) {
+            ENEMIES.push(createTargetPlayerEnemy(startX, -ENEMY_HEIGHT));
+        }
 
         // indicate that enemy has spawned
         ENEMY_SPAWN_MAP[def._id] = true;
